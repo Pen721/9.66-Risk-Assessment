@@ -1,41 +1,8 @@
-import math
-import numpy as np
-from numpy import random
-
-class Balloons:
-    def __init__(self, N = 10):
-        self.N = N
-        self.current_balloon = 0
-        self.max = 10
-        self.min = 0
-        self.probs = np.array([-1] * (self.max - self.min))
-        self.balloons = [-1] * N
-        print(*self.probs, sep = ", ")
-        
-        # for i in range(N):
-        #     self.balloons[i] = np.random.choice(self.probs, p=self.probs) + 1
-
-        # print("Balloons" + self.balloons)
+class Dist():
+    def __init__(self, type):
 
 
-    def getBallons(self):
-        return self.balloons.copy()
-
-    def getprobs(self):
-        print('getting probs ;_')
-        totalprobs = 0
-        for i in range(self.min, self.max):
-            n = 50
-            prob = 0
-            for e in range(n):
-                prob += self.dist(i + 1.0 * e/n) * 1.0 * e/n
-            self.probs[i] = prob
-            totalprobs += prob
-        
-        for i in range(len(self.probs)):
-            self.probs[i] /= totalprobs
-
-class GaussianBalloons(Balloons):
+class Gaussian(Dist):
     def __init__(self, N = 10):
         super().__init__(N)
         self.type = "GAUSSIAN"
@@ -84,7 +51,3 @@ class LimitBalloons(Balloons):
             return 0
         if x >= self.limit and x <= self.limit + 1: 
             return 1
-
-
-
-        

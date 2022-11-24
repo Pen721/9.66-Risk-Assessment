@@ -1,7 +1,7 @@
 #player class, 
 
 class Player:
-    def __init__(self, name, age, gender, time):
+    def __init__(self, name, age, gender, time = None):
         self.name = name
         self.age = age
         self.gender = gender
