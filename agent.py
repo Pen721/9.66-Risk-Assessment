@@ -1,0 +1,1 @@
+# a bayesian agent that runs calculations based on distribution
