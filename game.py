@@ -1,6 +1,6 @@
 import pygame, sys
 import player
-import balloon
+from balloons import GaussianBalloons, UniformBalloons, LimitBalloons, GeometricBalloons
 import argparse
 # from datetime import date
 from pygame.locals import *
@@ -10,12 +10,28 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--name", required=True)
 parser.add_argument("--gender", required=True)
 parser.add_argument("--age", type=int, required=True)
+parser.add_argument("--balloons", type=int, required=True)
 args = parser.parse_args()
-# today = date.today()
+
+N = args.balloons
+
+#distirbutions and number of variables
+DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
+distribution = random.choice(DISTS)
 
 player = player(args.name, args.gender, args.age)
-balloons = 
 
+balloons = None
+if distribution == 'GAUSSIAN':
+    balloons = GaussianBalloons(N)
+elif distribution == 'UNIFORM':
+    balloons = UniformBalloons(N)
+elif distribution == 'LIMIT':
+    balloons = LimitBalloons(N)
+elif distribution == 'GEOMETRIC':
+    balloons = LimitBalloons(N)
+else:
+    raise Exception("no distribution found ;-;???")
 
 
 pygame.init()
