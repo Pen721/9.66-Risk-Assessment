@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 class Dist():
     def __init__(self):
         '''distributions'''
+        self.N = 10
 
     def unnormalizedcdf(self, x, y):
         diff = y - x
@@ -60,7 +61,7 @@ class Uniform(Dist):
         
         self.mean = (self.max + self.min)/2.0
         self.var = (1.0/12)*(self.max - self.min)**2
-        self.total = self.cdf(0, N)
+        self.total = self.unnormalizedcdf(0, N)
         print("self.total", self.total)
         
     def pdf(self, x):
@@ -79,13 +80,12 @@ class Geometric(Dist):
         super().__init__()
         self.type = "GEOMETRIC"
         if p == None:
-            self.p = random.randint(0, 10) * 1.0 / 10
+            self.p = random.randint(1, 9) * 1.0 / 10
         else:
             self.p = p
         self.mean = 1.0/self.p
-        self.var = (1-self.p)/self.p**2
-        self.total = self.cdf(0, N)
-        print("self.total", self.total)
+        self.var = (1-self.p)/(self.p**2)
+        self.total = self.unnormalizedcdf(0, N)
         
     def pdf(self, x):
         return ((1 - self.p) ** math.floor(x - 1)) * self.p
@@ -102,7 +102,7 @@ class Limit(Dist):
             self.limit = random.randint(0, 10)
         self.mean = self.limit
         self.var = 0
-        self.total = self.cdf(0, N)
+        self.total = self.unnormalizedcdf(0, N)
         print("self.total", self.total)
         
     def pdf(self, x):
@@ -113,3 +113,9 @@ class Limit(Dist):
     
     def __str__(self):
         return "Limit {}".format(self.limit)
+
+# dist = Geometric()
+# print(dist.p)
+# data = [dist.cdf(0, (i) * 10/1000) for i in range(0, 1000)]
+# plt.plot(data)
+# plt.show()
