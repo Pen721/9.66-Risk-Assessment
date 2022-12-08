@@ -9,15 +9,17 @@ class Dist():
     def __init__(self):
         '''distributions'''
 
-    def cdf(self, x, y):
+    def unnormalizedcdf(self, x, y):
         diff = y - x
-        
         n = 100
         prob = 0
         for e in range(int((y - x) * n)):
             x0 = x + (diff) * e/((y-x) * n)
             prob += self.pdf(x0) * (1.0/n)
         return prob
+
+    def cdf(self, x, y):
+        return self.unnormalizedcdf(x, y) / self.total
 
 class Gaussian(Dist):
     def __init__(self, N = 10, mean = None, var = None):
@@ -34,7 +36,7 @@ class Gaussian(Dist):
             self.var = random.randint(1, 10)
        
         self.std = np.sqrt(self.var)
-        self.total = self.cdf(0, N)
+        self.total = self.unnormalizedcdf(0, N)
         print("self.total", self.total)
         
     def pdf(self, x):
@@ -111,9 +113,3 @@ class Limit(Dist):
     
     def __str__(self):
         return "Limit {}".format(self.limit)
-
-g = Limit()
-dist = [g.pdf(10/1000 * (i)) for i in range(1000)]
-print(g.limit)
-plt.plot(dist)
-plt.show()
