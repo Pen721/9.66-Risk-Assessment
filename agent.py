@@ -7,10 +7,10 @@ class Agent():
         self.max = 10
         self.min = 0
 
-        # hyp_mean = [i for i in range(self.max)]
-        hyp_mean = [5, 0]
-        # hyp_std = [i for i in range(1, 3+1)]
-        hyp_std = [1, 3]
+        hyp_mean = [i for i in range(self.max)]
+        # hyp_mean = [5, 0]
+        hyp_std = [i for i in range(1, 3+1)]
+        # hyp_std = [1]
 
         p = 1.0/(len(hyp_mean) * len(hyp_std))
         self.balloons = balloons
@@ -37,7 +37,7 @@ class Agent():
         # print("P_OBV")
         # print(p_obv)
 
-        print(size)
+        print("index {} size {}".format(index, size))
 
         for key in self.hypothesis:
             p = self.hypothesis[key][0]
@@ -56,24 +56,22 @@ class Agent():
             #P(will pop | haven't popped yet) = p(haven't popped | will pop) * p(will  pop) / (p(haven't popped | will pop) + p(haven't popped | won't pop))
             P_will_pop = 1.0 * dist.cdf(size, size+1) / dist.cdf(size, self.max)
             p_dist = p_prev * p
-            
-            print("DIST {} {}".format(dist.mean, dist.std))
-            print(p_dist)
+            print("will pop {} p_dist {}".format(P_will_pop, p_dist) )
+            print("DIST {} {} {}".format(dist.mean, dist.std, p_dist))
             print()
-
             will_pop += P_will_pop * p_dist
-        print("POBV: {}".format(p_obv))
         will_pop = will_pop / p_obv
         print("WILLPOP: {}".format(will_pop))
         return will_pop
 
-    def pump(self, index, size):
+    def pump(self, index, size, score):
         will_pop = self.pop_prob(index, size)
         #we could do a better method that takes into account expected value or something in the future
-        if(will_pop > 0.5):
-            return False
-        else:
+        expected_utility = 1 * (1-will_pop) + -1 * (will_pop) * score
+        if(expected_utility > 0):
             return True
+        else:
+            return False
     
     def balloonpops(self, index, size):
         if(self.balloons[index] > size):
@@ -101,7 +99,7 @@ class Agent():
                     #TODO: There might be a bug from the dist where all balloons pop at 10
                     index += 1
                     size = 0
-                elif(self.pump(index, size)):
+                elif(self.pump(index, size, points + points_from_this_balloon)):
                     # print("PUMPED!")
                     size += 1
                     points_from_this_balloon += 1
@@ -123,8 +121,8 @@ class Agent():
         print("POINTS: {}".format(points))
 
 
-# a = Agent([5,6,5,7,5,6,7,5,6,7])
-a = Agent([5])
+a = Agent([5,6,5,7,5,6,7,5,6,7])
+# a = Agent([5, 6])
 a.play()
 
 # GAUSSIAN mean 7 std 1
