@@ -9,6 +9,9 @@ class Dist():
     def __init__(self):
         '''distributions'''
         self.N = 10
+        self.max = 10
+        self.min = 0
+        self.cdfmemo = [[-1] * (self.max + 1)] * (self.max + 1)
 
     def unnormalizedcdf(self, x, y):
         diff = y - x
@@ -20,31 +23,34 @@ class Dist():
         return prob
 
     def cdf(self, x, y):
-        return self.unnormalizedcdf(x, y) / self.total
+        if(self.cdfmemo[x][y] != -1):
+            return self.cdfmemo[x][y]
+        else:
+            self.cdfmemo[x][y] = self.unnormalizedcdf(x, y) / self.total
+            return self.cdfmemo[x][y]
 
 class Gaussian(Dist):
-    def __init__(self, N = 10, mean = None, var = None):
+    def __init__(self, N = 10, mean = None, std = None):
         super().__init__()
         self.type = "GAUSSIAN"
 
         self.mean = mean 
-        self.var = var
+        self.std = std
 
         if self.mean == None:
             self.mean = random.randint(0, 10)
 
-        if self.var == None:
-            self.var = random.randint(1, 10)
+        if self.std == None:
+            self.std = random.randint(1, 3)
        
-        self.std = np.sqrt(self.var)
+        self.var = self.std ** 2
         self.total = self.unnormalizedcdf(0, N)
-        print("self.total", self.total)
         
     def pdf(self, x):
         return 1.0/ (self.std * math.sqrt(2 * np.pi)) * np.exp((-1 * (x - self.mean)**2) / (2 * self.var))
 
     def __str__(self):
-        return "Gaussian mean {} var {}".format(self.mean, self.var)
+        return "Gaussian mean {} std {}".format(self.mean, self.std)
 
 
 class Uniform(Dist):
@@ -55,9 +61,9 @@ class Uniform(Dist):
         self.min = min
 
         if self.max == None:
-            self.max = random.randint(5, 10)
+            self.max = random.randint(2, 10)
         if self.min == None:
-            self.min = random.randint(0, 5)
+            self.min = random.randint(0, self.max - 2)
         
         self.mean = (self.max + self.min)/2.0
         self.var = (1.0/12)*(self.max - self.min)**2
@@ -114,8 +120,8 @@ class Limit(Dist):
     def __str__(self):
         return "Limit {}".format(self.limit)
 
-# dist = Geometric()
-# print(dist.p)
-# data = [dist.cdf(0, (i) * 10/1000) for i in range(0, 1000)]
+# dist = Gaussian(mean=6, std=4)
+# print(dist)
+# print(dist.cdf(0, 10))
 # plt.plot(data)
 # plt.show()

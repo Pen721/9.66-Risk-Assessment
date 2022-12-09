@@ -14,13 +14,13 @@ class Balloons:
 
     def __str__(self):
         str = ""
-        str += self.type
+        str += "{} mean {} std {}".format(self.type, self.dist.mean, self.dist.std)
         str += '\nBALLOONS: '
         for i in range(len(self.balloons)):
             str += "{}".format(self.balloons[i]) + ","
         str += " \n probs: "
         for i in range(len(self.probs)):
-            str += "{}".format(self.p_range(i, i+1)) + ", "
+            str += "{0:.{1}f}".format(self.p_range(i, i+1), 4) + ", "
         str += " \n "
         str += "balloons"
         return str
@@ -28,7 +28,7 @@ class Balloons:
     def initializeBalloons(self):
         for i in range(self.max - self.min):
             self.probs[i] = self.p_range(i, i+1)
-
+        print(np.sum(self.probs))
         pop = random.choice(self.max, self.N, p=self.probs)
         self.balloons = pop
 
@@ -69,5 +69,5 @@ class LimitBalloons(Balloons):
         self.dist = Limit()
         self.initializeBalloons()
 
-balloons = UniformBalloons()
+balloons = GaussianBalloons()
 print(balloons)
