@@ -36,17 +36,18 @@ else:
 
 B = balloons.getBallons()
 
+
 # Game Part
 
-# pygame.init()
-# DISPLAYSURF = pygame.display.set_mode((400, 300))
-# pygame.display.set_caption('Hello World!')
+pygame.init()
+DISPLAYSURF = pygame.display.set_mode((400, 300))
+pygame.display.set_caption('Hello World!')
 
 
-# while True: # main game loop
-#     for event in pygame.event.get():
-#          if event.type == QUIT:
-#             pygame.quit()
-#             #record data
-#             sys.exit()
-#     pygame.display.update()
+while True: # main game loop
+    for event in pygame.event.get():
+         if event.type == QUIT:
+            pygame.quit()
+            #record data
+            sys.exit()
+    pygame.display.update()
