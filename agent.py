@@ -27,8 +27,29 @@ class Agent():
 
         self.infiniteHorizon = False
         self.horizon = horizon
+        self.memo = {}
+        self.utilitymemo = {}
+
+    def convert_to_key(self, index, size, observation):
+        obsstring = ""
+        for i in range(len(observation)):
+            if(observation[i][0] != -1):
+                obsstring += "{}{}".format(observation[i][0], observation[i][1])
+        return (index, size, obsstring)
+
+    def check_memo(self, index, size, observation):
+        key = self.convert_to_key(index, size, observation)
+        if(key in self.memo):
+            return self.memo[key]
+        return None
+
+    def set_memo(self, index, size, observation, value):
+        key = self.convert_to_key(index, size, observation)
+        if(key in self.memo):
+            raise Exception("huh why are we setting this again :0")
+        self.memo[key] = value
        
-    def pop_prob(self, index, size, observation):
+    def pop_prob(self, index, size, observation,):
         will_pop = 0.0
         p_obv = 0
 
@@ -46,43 +67,68 @@ class Agent():
         # print(p_obv)
 
         # print("index {} size {}".format(index, size))
-        maxkey = None
-        maxprob = 0
-        for key in self.hypothesis:
-            p = self.hypothesis[key][0]
-            dist = self.hypothesis[key][1]
+        val = self.check_memo(index, size, observation)
 
-            #current balloon observation
-            p_prev = dist.cdf(size, self.max)
+        if(val != None):
+            return val
+        else:
+            maxkey = None
+            maxprob = 0
+            for key in self.hypothesis:
+                p = self.hypothesis[key][0]
+                dist = self.hypothesis[key][1]
 
-            for i in range(index):
-                obs = observation
-                item = obs[i]
-                bal_size = item[0]
-                popped = item[1]
-                if(popped): 
-                    p_prev *= dist.cdf(bal_size -1, bal_size)
-                else:
-                    p_prev *= dist.cdf(bal_size, self.max)
-            # print("p_prev {}".format(p_prev))
-            p_obv += p_prev
-            #P(will pop | haven't popped yet) = p(haven't popped | will pop) * p(will  pop) / (p(haven't popped | will pop) + p(haven't popped | won't pop))
-            P_will_pop = 1.0 * dist.cdf(size, size+1) / dist.cdf(size, self.max)
-            p_dist = p_prev #*p
+                #current balloon observation
+                p_prev = dist.cdf(size, self.max)
 
-            if(p_dist > maxprob):
-                maxkey = key
-                maxprob = p_dist
+                for i in range(index):
+                    obs = observation
+                    item = obs[i]
+                    bal_size = item[0]
+                    popped = item[1]
+                    if(popped): 
+                        p_prev *= dist.cdf(bal_size -1, bal_size)
+                    else:
+                        p_prev *= dist.cdf(bal_size, self.max)
+                # print("p_prev {}".format(p_prev))
+                p_obv += p_prev
+                #P(will pop | haven't popped yet) = p(haven't popped | will pop) * p(will  pop) / (p(haven't popped | will pop) + p(haven't popped | won't pop))
+                P_will_pop = 1.0 * dist.cdf(size, size+1) / dist.cdf(size, self.max)
+                p_dist = p_prev #*p
 
-            # print("will pop {} p_dist {}".format(P_will_pop, p_dist) )
-            # print("DIST {} {} {}".format(dist.mean, dist.std, p_dist))
-            # print()
-            will_pop += P_will_pop * p_dist
-        
-        will_pop = will_pop / p_obv
-        # print("MOST LIKELY DIST: {} prob {}".format(maxkey, maxprob / p_obv))
-        # print("WILLPOP: {}".format(will_pop))
-        return will_pop
+                if(p_dist > maxprob):
+                    maxkey = key
+                    maxprob = p_dist
+
+                # print("will pop {} p_dist {}".format(P_will_pop, p_dist) )
+                # print("DIST {} {} {}".format(dist.mean, dist.std, p_dist))
+                # print()
+                will_pop += P_will_pop * p_dist
+            
+            will_pop = will_pop / p_obv
+            # print("MOST LIKELY DIST: {} prob {}".format(maxkey, maxprob / p_obv))
+            # print("WILLPOP: {}".format(will_pop))
+            self.set_memo(index, size, observation, will_pop)
+            return will_pop
+
+    def utility_key(self, index, size, score, infiniteHorizon, horizon, obs):
+        obsstring = ""
+        for i in range(len(obs)):
+            if(obs[i][0] != -1):
+                obsstring += "{}{}".format(obs[i][0], obs[i][1])
+        return (index, size, score, infiniteHorizon, horizon, obsstring)
+
+    def check_utility_memo(self, index, size, score, infiniteHorizon, horizon, obs):
+        key = self.utility_key(index, size, score, infiniteHorizon, horizon, obs)
+        if(key in self.utilitymemo):
+            return self.utilitymemo[key]
+        return None
+
+    def set_utility_memo(self, index, size, score, infiniteHorizon, horizon, obs, value):
+        key = self.utility_key(index, size, score, infiniteHorizon, horizon, obs)
+        if(key in self.utilitymemo):
+            raise Exception("huh why are we setting this again :0")
+        self.utilitymemo[key] = value
 
     def getExpectedUtility(self, index, size, score, infiniteHorizon, horizon, obs):
         #index: ramges from 0 to self.N - 1
@@ -90,45 +136,52 @@ class Agent():
         #score ranges from 0 to self.max
         #infiniteHorizon False
         #horizon ranges from 0 to self.horizon
-        #obs 
-        if(infiniteHorizon): 
-            pass
+        #obs has self.N values, each has self.max values, and True or False (popped or not)
+        val = self.check_utility_memo(index, size, score, infiniteHorizon, horizon, obs)
+        if(val != None):
+            return val
         else:
-            if(horizon == 0):
-                p = random.randint(0, 1)
-                if p==1:
-                    return ("PUMP", 0)
-                if p==0:
-                    return ("PASS", 0)
-            elif(index >= self.N):
-                return ("PASS", 0)
-            elif(horizon == 1):
-                will_pop = self.pop_prob(index, size, obs) 
-                EU_PUMP = 1 * (1-will_pop) + (will_pop) * -1 * score
-                EU_PASS = 0
-                if(EU_PUMP > 0):
-                    return ("PUMP", EU_PUMP)
-                else:
-                    return ("PASS", 0)
+            if(infiniteHorizon): 
+                raise Exception("not implemented yet because I am small brian ;-;")
             else:
-                will_pop = self.pop_prob(index, size, obs)
-                hyp_pump_not_pop = obs.copy()
-                hyp_pump = obs.copy()
-                hyp_pump.append([size + 1, True])
-
-                decay = self.decay
-                score_if_not = 1 + decay * self.getExpectedUtility(index, size, score+1, infiniteHorizon, horizon - 1, hyp_pump_not_pop)[1]
-                score_if_pop = -score + decay * self.getExpectedUtility(index + 1, 0, 0, infiniteHorizon, horizon - 1, hyp_pump)[1]
-
-                score_pump = will_pop * score_if_pop + (1-will_pop) * score_if_not
-                hyp_pass = obs.copy()
-                hyp_pass.append([size, False])
-                score_pass = decay * self.getExpectedUtility(index + 1, 0, 0, infiniteHorizon, horizon - 1, hyp_pass)[1]
-
-                if(score_pass > score_pump):
-                    return ("PASS", max(score_pump, score_pass))
+                if(horizon == 0):
+                    p = random.randint(0, 1)
+                    if p==1:
+                        return ("PUMP", 0)
+                    if p==0:
+                        return ("PASS", 0)
+                elif(index >= self.N):
+                    return ("PASS", 0)
+                elif(horizon == 1):
+                    will_pop = self.pop_prob(index, size, obs) 
+                    EU_PUMP = 1 * (1-will_pop) + (will_pop) * -1 * score
+                    if(EU_PUMP > 0):
+                        self.set_utility_memo(index, size, score, infiniteHorizon, horizon, obs, ("PUMP", EU_PUMP))
+                        return ("PUMP", EU_PUMP)
+                    else:
+                        self.set_utility_memo(index, size, score, infiniteHorizon, horizon, obs, ("PASS", 0))
+                        return ("PASS", 0)
                 else:
-                    return ("PUMP", max(score_pump, score_pass))
+                    will_pop = self.pop_prob(index, size, obs)
+                    hyp_pump_not_pop = obs.copy()
+                    hyp_pump = obs.copy()
+                    hyp_pump.append([size + 1, True])
+
+                    decay = self.decay
+                    score_if_not = 1 + decay * self.getExpectedUtility(index, size, score+1, infiniteHorizon, horizon - 1, hyp_pump_not_pop)[1]
+                    score_if_pop = -score + decay * self.getExpectedUtility(index + 1, 0, 0, infiniteHorizon, horizon - 1, hyp_pump)[1]
+
+                    score_pump = will_pop * score_if_pop + (1-will_pop) * score_if_not
+                    hyp_pass = obs.copy()
+                    hyp_pass.append([size, False])
+                    score_pass = decay * self.getExpectedUtility(index + 1, 0, 0, infiniteHorizon, horizon - 1, hyp_pass)[1]
+
+                    if(score_pass > score_pump):
+                        self.set_utility_memo(index, size, score, infiniteHorizon, horizon, obs, ("PASS", max(score_pump, score_pass)))
+                        return ("PASS", max(score_pump, score_pass))
+                    else:
+                        self.set_utility_memo(index, size, score, infiniteHorizon, horizon, obs, ("PUMP", max(score_pump, score_pass)))
+                        return ("PUMP", max(score_pump, score_pass))
 
     def pump(self, index, size, score):
         expected_utility = self.getExpectedUtility(index, size, score, self.infiniteHorizon, self.horizon, self.observed.copy())
@@ -191,11 +244,12 @@ class Agent():
 # print(a.play())
 
 # number of experiments
-K = 15
+K = 50
 N = 10
 obs = []
 dists = []
-decay = 0.3
+decay = 0.9
+
 for i in range(K):
     b = GaussianBalloons(N=N)
     dists.append(b)
@@ -221,7 +275,7 @@ for i in range(len(obs)):
 plt.xlabel('horizon')
 plt.ylabel('points')
 plt.title('points gained over horizons')
-plt.savefig('graphs/gaussianN={}decay={}K={}.jpg'.format(N, decay, K))
+plt.savefig('graphs/Gaussian/N={}decay={}K={}.jpg'.format(N, decay, K))
 
 
 # GAUSSIAN mean 7 std 1
