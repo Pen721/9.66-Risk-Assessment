@@ -69,5 +69,5 @@ class LimitBalloons(Balloons):
         self.dist = Limit()
         self.initializeBalloons()
 
-balloons = GaussianBalloons()
+balloons = GaussianBalloons(N=20)
 print(balloons)
