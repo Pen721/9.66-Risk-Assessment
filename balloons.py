@@ -42,10 +42,10 @@ class Balloons:
         return self.dist.cdf(x, y)
 
 class GaussianBalloons(Balloons):
-    def __init__(self, N = 10):
+    def __init__(self, N = 10, mean = None, std = None):
         super().__init__(N)
         self.type = "GAUSSIAN"
-        self.dist = Gaussian()
+        self.dist = Gaussian(mean=mean, std=std)
         self.initializeBalloons()
 
 class UniformBalloons(Balloons):
@@ -68,6 +68,3 @@ class LimitBalloons(Balloons):
         self.type = "LIMIT"
         self.dist = Limit()
         self.initializeBalloons()
-
-balloons = GaussianBalloons(N=20)
-print(balloons)

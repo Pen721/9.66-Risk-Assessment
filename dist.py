@@ -23,7 +23,15 @@ class Dist():
         return prob
 
     def cdf(self, x, y):
-        if(self.cdfmemo[x][y] != -1):
+        if(x > self.max):
+            return 0
+        elif(y > self.max):
+            return self.cdf(x, self.max)
+        elif(y < 0):
+            return 0
+        elif(x < 0):
+            return self.cdf(0, y)
+        elif(self.cdfmemo[x][y] != -1):
             return self.cdfmemo[x][y]
         else:
             self.cdfmemo[x][y] = self.unnormalizedcdf(x, y) / self.total
