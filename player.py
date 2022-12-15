@@ -7,7 +7,7 @@ class Player:
         self.age = age
         self.gender = gender
         # self.time = time
-        self.actions = [[0, 0, "PUMP", 0.3], [0, 1, "PUMP", 0.4]] #stores actions of player over time
+        self.actions = [] #stores actions of player over time
 
     def nextBalloon(self, timeStamp, ):
         '''update actions'''
@@ -26,6 +26,10 @@ class Player:
        for i in self.actions:
            f.write("{} {} {} {} \n".format(i[0], i[1], i[2], i[3]))
        f.close()
+    
+    def addActionData(self, index, size, action, time):
+        'index and size of of the balloon -> if we are on the first balloon and its size 3, it would be index 0 size 3, action is either a string of PUMP or PASS, time is the time since the last action (optional)'
+        self.actions.append([index, size, action, time])
 
 p = Player("Jenny", 23, "M")
 p.writeData()
