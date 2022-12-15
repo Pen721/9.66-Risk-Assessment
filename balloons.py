@@ -30,6 +30,7 @@ class Balloons:
             self.probs[i] = self.p_range(i, i+1)
         print(np.sum(self.probs))
         pop = random.choice(self.max, self.N, p=self.probs)
+        pop = [i+1 for i in pop]
         self.balloons = pop
 
     def getBallons(self):
@@ -41,11 +42,12 @@ class Balloons:
     def p_range(self, x, y):
         return self.dist.cdf(x, y)
 
+
 class GaussianBalloons(Balloons):
-    def __init__(self, N = 10):
+    def __init__(self, N = 10, mean = None, std = None):
         super().__init__(N)
         self.type = "GAUSSIAN"
-        self.dist = Gaussian()
+        self.dist = Gaussian(mean=mean, std=std)
         self.initializeBalloons()
 
 class UniformBalloons(Balloons):
@@ -68,6 +70,3 @@ class LimitBalloons(Balloons):
         self.type = "LIMIT"
         self.dist = Limit()
         self.initializeBalloons()
-
-balloons = GaussianBalloons()
-print(balloons)

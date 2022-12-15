@@ -10,7 +10,7 @@ class Dist():
         '''distributions'''
         self.N = 10
         self.max = 10
-        self.min = 0
+        self.min = 1
         self.cdfmemo = [[-1] * (self.max + 1)] * (self.max + 1)
 
     def unnormalizedcdf(self, x, y):
@@ -23,7 +23,15 @@ class Dist():
         return prob
 
     def cdf(self, x, y):
-        if(self.cdfmemo[x][y] != -1):
+        if(x > self.max):
+            return 0
+        elif(y > self.max):
+            return self.cdf(x, self.max)
+        elif(y < 0):
+            return 0
+        elif(x < 0):
+            return self.cdf(0, y)
+        elif(self.cdfmemo[x][y] != -1):
             return self.cdfmemo[x][y]
         else:
             self.cdfmemo[x][y] = self.unnormalizedcdf(x, y) / self.total
@@ -38,7 +46,7 @@ class Gaussian(Dist):
         self.std = std
 
         if self.mean == None:
-            self.mean = random.randint(0, 10)
+            self.mean = random.randint(1, 10)
 
         if self.std == None:
             self.std = random.randint(1, 3)
@@ -120,8 +128,14 @@ class Limit(Dist):
     def __str__(self):
         return "Limit {}".format(self.limit)
 
-# dist = Gaussian(mean=6, std=4)
-# print(dist)
-# print(dist.cdf(0, 10))
-# plt.plot(data)
-# plt.show()
+# dist = Gaussian(mean=5, std=1)
+# dist2 = Gaussian(mean = 1, std=1)
+# pprev1 = dist.cdf(3, 10) * dist.cdf(3, 4)
+
+# pprev2 = dist2.cdf(3,10) * dist2.cdf(3, 4)
+# print(pprev1)
+# print(pprev2)
+
+# ptotal = pprev1 + pprev2
+# print(pprev1 / ptotal)
+# print(pprev2 / ptotal)
