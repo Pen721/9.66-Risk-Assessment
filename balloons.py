@@ -5,12 +5,12 @@ from dist import Gaussian, Geometric, Limit, Uniform
 
 class Balloons:
     def __init__(self, N = 10):
-        self.N = N
-        self.current_balloon = 0
+        self.N = N  # number of balloons
+        self.current_balloon = 0 
         self.max = 10
         self.min = 0
         self.probs = np.empty(self.max - self.min, dtype=float)
-        self.balloons = np.empty(self.N, dtype=float)
+        self.balloons = np.empty(self.N, dtype=float)  # balloon array w/ how many inc cause breaking
 
     def __str__(self):
         str = ""

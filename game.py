@@ -36,18 +36,54 @@ else:
 
 B = balloons.getBallons()
 
-
 # Game Part
 
 pygame.init()
-DISPLAYSURF = pygame.display.set_mode((400, 300))
+SCREEN_HEIGHT = 400
+SCREEN_WIDTH = 300
+BALLOON_SIZE = 20
+DISPLAYSURF = pygame.display.set_mode((SCREEN_HEIGHT, SCREEN_WIDTH))
 pygame.display.set_caption('Hello World!')
+ 
+total_score = 0
+currBalloonIdx = 0
+numberBalloons = balloons.N
 
+curr_pumps = 0 # aka player score
+lastKeyPressed = 0
+timeDelay = 2000 # wait 0.2 seconds between key presses
 
-while True: # main game loop
+while currBalloonIdx < numberBalloons: # main game loop
+    max_pumps = B[currBalloonIdx]
     for event in pygame.event.get():
-         if event.type == QUIT:
+        if event.type == QUIT: 
             pygame.quit()
-            #record data
+            # record data
             sys.exit()
-    pygame.display.update()
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT: # INC BALLOON SIZE
+            print("MAX PUMPS")
+            print(max_pumps)
+            # and pygame.time.get_ticks() - lastKeyPressed > timeDelay
+            lastKeyPressed = pygame.time.get_ticks()
+            curr_pumps += 1
+
+            if curr_pumps == max_pumps: # BALLOON POPS 
+                curr_pumps = 0
+                BALLOON_SIZE += 5
+
+            else: # PUMP BALLOON 
+                BALLOON_SIZE = 20 # reset to initial size
+                currBalloonIdx+=1
+
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
+            lastKeyPressed = pygame.time.get_ticks()
+            total_score += curr_pumps
+            curr_pumps = 0
+            BALLOON_SIZE = 20 # reset to initial size
+            currBalloonIdx+=1
+
+        DISPLAYSURF.fill((255, 255, 255))  # white background
+        pygame.draw.circle(DISPLAYSURF, (0, 0, 255), (SCREEN_HEIGHT/2, SCREEN_WIDTH/2), BALLOON_SIZE)
+
+        pygame.display.update()
