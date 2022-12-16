@@ -41,7 +41,6 @@ class Gaussian(Dist):
     def __init__(self, N = 10, mean = None, std = None):
         super().__init__()
         self.type = "GAUSSIAN"
-
         self.mean = mean 
         self.std = std
 
@@ -75,6 +74,7 @@ class Uniform(Dist):
         
         self.mean = (self.max + self.min)/2.0
         self.var = (1.0/12)*(self.max - self.min)**2
+        self.std = np.sqrt(self.var)
         self.total = self.unnormalizedcdf(0, N)
         print("self.total", self.total)
         

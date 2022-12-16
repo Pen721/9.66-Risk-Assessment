@@ -21,7 +21,6 @@ N = args.balloons
 DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
 distribution = random.choice(DISTS)
 
-player = Player(args.name, args.gender, args.age, args.balloons, args.course, )
 
 balloons = None
 if distribution == 'GAUSSIAN':
@@ -38,6 +37,8 @@ else:
 B = balloons.getBallons()
 print(B)
 
+player = Player(args.name, args.age, args.gender, args.course, balloons)
+player.addDistributionData()
 # Game Part
 
 # TODO: save data 
