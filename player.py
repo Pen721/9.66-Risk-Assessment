@@ -33,6 +33,12 @@ class Player:
        for i in self.actions:
            f.write("{} {} {} {} \n".format(i[0], i[1], i[2], i[3]))
        f.close()
+
+    def writeStringToData(self, string):
+        self.setFileName()
+        f = open("data/{}".format(self.fileName), "a")
+        f.write(string)
+        f.close()
     
     def addActionData(self, index, size, action, time):
         'index and size of of the balloon -> if we are on the first balloon and its size 3, it would be index 0 size 3, action is either a string of PUMP or PASS, time is the time since the last action (optional)'
@@ -41,23 +47,22 @@ class Player:
     def setFileName(self):
         now = datetime.now()
         if(self.fileName == None):
-            self.fileName = "{}_{}_{}_{}_{}_{}.txt".format(self.name, self.age, self.gender, self.N, self.course, now.strftime("%Y-%m-%d_%H:%M"))
+            self.fileName = "{}_{}_{}_{}_{}_{}_{}.txt".format(self.name, self.age, self.gender, self.N, self.course, now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString())
 
     def addDistributionData(self):
         self.setFileName()
         f = open("data/{}".format(self.fileName), "a")
         dist = self.balloons.dist
-        print("TYPE\n\n")
-        print(dist.type)
-        if dist.type=="UNIFORM":
-            f.write("{} {} {}".format(dist.type, self.N, dist.min, dist.max))
-        elif dist.type=="GAUSSIAN":
-            f.write("{} {} {}".format(dist.type, self.N, dist.mean, dist.std))
-        elif dist.type == "GEOMETRIC":
-            f.write("{} {} {}".format(dist.type, self.N, dist.p))
-        elif dist.type=="LIMIT":
-            f.write("{} {} {}".format(dist.type, self.N, dist.limit))
-        else:
-            raise Exception("dist doesn't have type")
+        f.write(dist.shortString())
+        # if dist.type=="UNIFORM":
+        #     f.write(dist.shortString)
+        # elif dist.type=="GAUSSIAN":
+        #     f.write("{} {} {}".format(dist.type, self.N, dist.mean, dist.std))
+        # elif dist.type == "GEOMETRIC":
+        #     f.write("{} {} {}".format(dist.type, self.N, dist.p))
+        # elif dist.type=="LIMIT":
+        #     f.write("{} {} {}".format(dist.type, self.N, dist.limit))
+        # else:
+        #     raise Exception("dist doesn't have type")
         f.write("\n")
         f.write("{}\n".format(self.pops))

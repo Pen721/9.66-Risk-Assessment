@@ -58,6 +58,9 @@ class Gaussian(Dist):
 
     def __str__(self):
         return "Gaussian mean {} std {}".format(self.mean, self.std)
+    
+    def shortString(self):
+        return "{} {} {} {}".format(self.type, self.N, self.mean, self.std)
 
 
 class Uniform(Dist):
@@ -89,6 +92,9 @@ class Uniform(Dist):
     def __str__(self):
         return "Uniform max {} min {}".format(self.max, self.min)
 
+    def shortString(self):
+        return "{} {} {}".format(self.type, self.N, self.min, self.max)
+
 class Geometric(Dist):
     def __init__(self, N = 10, p = None):
         super().__init__()
@@ -106,6 +112,9 @@ class Geometric(Dist):
 
     def __str__(self):
         return "Geometric p {}".format(self.p)
+
+    def shortString(self):
+        return "{} {} {}".format(self.type, self.N, self.p)
         
 class Limit(Dist):
     def __init__(self, N = 10, limit = None):
@@ -127,6 +136,9 @@ class Limit(Dist):
     
     def __str__(self):
         return "Limit {}".format(self.limit)
+    
+    def shortString(self):
+        return "{} {} {}".format(self.type, self.N, self.limit)
 
 # dist = Gaussian(mean=5, std=1)
 # dist2 = Gaussian(mean = 1, std=1)

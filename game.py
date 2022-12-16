@@ -107,17 +107,17 @@ while currBalloonIdx < numberBalloons: # main game loop
 
             if curr_pumps == max_pumps: # BALLOON POPS 
                 # TODO - add time since last action / timestamp, going from start
-                # player.addActionData(currBalloonIdx, curr_pumps, "POP", ?) # TODO - what should size be
+                player.addActionData(currBalloonIdx, curr_pumps, "POP", 0) # TODO - what should size be
                 curr_pumps = 0 # reset current score
                 BALLOON_SIZE = 20 # reset to initial size
                 currBalloonIdx+=1
 
             else: # PUMP BALLOON 
                 BALLOON_SIZE += 5
-                # player.addActionData(currBalloonIdx, curr_pumps, "PUMP", ?)
+                player.addActionData(currBalloonIdx, curr_pumps, "PUMP", 0)
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
-            # player.addActionData(currBalloonIdx, curr_pumps, "PASS", ?)
+            player.addActionData(currBalloonIdx, curr_pumps, "PASS", 0)
             lastKeyPressed = pygame.time.get_ticks()
             total_score += curr_pumps
             curr_pumps = 0
@@ -138,3 +138,4 @@ while currBalloonIdx < numberBalloons: # main game loop
         pygame.display.update()
 
 player.writeData()
+player.writeStringToData("TOTAL SCORE {}".format(total_score))
