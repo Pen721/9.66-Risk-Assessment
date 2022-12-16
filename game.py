@@ -8,10 +8,11 @@ from numpy import random
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--name", default= "PENROLINE", required=False)
-parser.add_argument("--gender", default = "IDK", required=False)
-parser.add_argument("--age", type=int, default = 20, required=False)
-parser.add_argument("--balloons", type=int, default = 10, required=False)
+parser.add_argument("--name", default= "PENROLINE", required=True)
+parser.add_argument("--gender", default = "IDK", required=True)
+parser.add_argument("--age", type=int, default = 20, required=True)
+parser.add_argument("--balloons", type=int, default = 10, required=True)
+parser.add_argument("--course", type=int, default = 6, required=True)
 args = parser.parse_args()
 
 N = args.balloons
@@ -35,6 +36,7 @@ else:
     raise Exception("no distribution found ;-;???")
 
 B = balloons.getBallons()
+print(B)
 
 # Game Part
 
