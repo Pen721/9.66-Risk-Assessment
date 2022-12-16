@@ -21,7 +21,7 @@ N = args.balloons
 DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
 distribution = random.choice(DISTS)
 
-player = Player(args.name, args.gender, args.age)
+player = Player(args.name, args.gender, args.age, args.balloons, args.course, )
 
 balloons = None
 if distribution == 'GAUSSIAN':
@@ -135,3 +135,5 @@ while currBalloonIdx < numberBalloons: # main game loop
             pygame.draw.circle(DISPLAYSURF, RED, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), BALLOON_SIZE)
 
         pygame.display.update()
+
+player.writeData()
