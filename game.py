@@ -6,7 +6,7 @@ import argparse
 from pygame.locals import *
 from numpy import random
 
-
+# TODO: start button, time stamp, add balloon 9 on game screen
 parser = argparse.ArgumentParser()
 parser.add_argument("--name", default= "PENROLINE", required=False)
 parser.add_argument("--gender", default = "IDK", required=False)
@@ -39,7 +39,6 @@ print(B)
 
 # Game Part
 
-# TODO: add instructions
 # TODO: save data 
 
 pygame.init()
@@ -69,9 +68,9 @@ while currBalloonIdx < numberBalloons: # main game loop
 
     font = pygame.font.Font('freesansbold.ttf', 32)
     # score text
-    currScoreTxt = font.render('This Round: ' + str(curr_pumps), True, RED, WHITE)
+    currScoreTxt = font.render('This Balloon: ' + str(curr_pumps), True, RED, WHITE)
     currScoreRect = currScoreTxt.get_rect()
-    totalScoreTxt = font.render('Points Earned: ' + str(total_score), True, BLUE, WHITE)
+    totalScoreTxt = font.render('Total Earned: ' + str(total_score), True, BLUE, WHITE)
     totalScoreRect = totalScoreTxt.get_rect()
     totalScoreRect.center = (2 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
@@ -79,11 +78,11 @@ while currBalloonIdx < numberBalloons: # main game loop
     upKeyText = font.render('Up: Collect $', True, BLACK, WHITE)
     upKeyRect = upKeyText.get_rect()
 
-    rightKeyText = font.render('Right: Pump', True, BLACK, WHITE)
+    rightKeyText = font.render('Press right to pump', True, BLACK, WHITE)
     rightKeyRect = upKeyText.get_rect()
 
     rightKeyRect.center = (8.5*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
-    upKeyRect.center = (1.85 * SCREEN_WIDTH / 3, 5 * SCREEN_HEIGHT / 50)
+    upKeyRect.center = (2.3 * SCREEN_WIDTH / 3, 5 * SCREEN_HEIGHT / 50)
 
 
     for event in pygame.event.get():
@@ -105,14 +104,18 @@ while currBalloonIdx < numberBalloons: # main game loop
             print(curr_pumps)
 
             if curr_pumps == max_pumps: # BALLOON POPS 
+                # TODO - add time since last action / timestamp, going from start
+                # player.addActionData(currBalloonIdx, curr_pumps, "POP", ?) # TODO - what should size be
                 curr_pumps = 0 # reset current score
                 BALLOON_SIZE = 20 # reset to initial size
                 currBalloonIdx+=1
 
             else: # PUMP BALLOON 
                 BALLOON_SIZE += 5
+                # player.addActionData(currBalloonIdx, curr_pumps, "PUMP", ?)
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
+            # player.addActionData(currBalloonIdx, curr_pumps, "PASS", ?)
             lastKeyPressed = pygame.time.get_ticks()
             total_score += curr_pumps
             curr_pumps = 0
