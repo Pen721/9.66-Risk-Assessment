@@ -39,6 +39,9 @@ print(B)
 
 # Game Part
 
+# TODO: add instructions
+# TODO: save data 
+
 pygame.init()
 SCREEN_HEIGHT = 800
 SCREEN_WIDTH = 600
@@ -57,6 +60,7 @@ timeDelay = 2000 # wait 0.2 seconds between key presses
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+BLACK = (0,0,0)
 
 # https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
 
@@ -64,11 +68,23 @@ while currBalloonIdx < numberBalloons: # main game loop
     max_pumps = B[currBalloonIdx]
 
     font = pygame.font.Font('freesansbold.ttf', 32)
+    # score text
     currScoreTxt = font.render('This Round: ' + str(curr_pumps), True, RED, WHITE)
     currScoreRect = currScoreTxt.get_rect()
     totalScoreTxt = font.render('Points Earned: ' + str(total_score), True, BLUE, WHITE)
     totalScoreRect = totalScoreTxt.get_rect()
     totalScoreRect.center = (2 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
+
+    # instruction text
+    upKeyText = font.render('Up: Collect $', True, BLACK, WHITE)
+    upKeyRect = upKeyText.get_rect()
+
+    rightKeyText = font.render('Right: Pump', True, BLACK, WHITE)
+    rightKeyRect = upKeyText.get_rect()
+
+    rightKeyRect.center = (8.5*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
+    upKeyRect.center = (1.85 * SCREEN_WIDTH / 3, 5 * SCREEN_HEIGHT / 50)
+
 
     for event in pygame.event.get():
         if event.type == QUIT: 
@@ -106,6 +122,8 @@ while currBalloonIdx < numberBalloons: # main game loop
         DISPLAYSURF.fill(WHITE)  # white background
         DISPLAYSURF.blit(currScoreTxt, currScoreRect)
         DISPLAYSURF.blit(totalScoreTxt, totalScoreRect)
+        DISPLAYSURF.blit(rightKeyText, rightKeyRect)
+        DISPLAYSURF.blit(upKeyText, upKeyRect)
 
         if currBalloonIdx % 2 == 0: # have color alternate between conseq. balloons
             pygame.draw.circle(DISPLAYSURF, BLUE, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), BALLOON_SIZE)
