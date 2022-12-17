@@ -22,7 +22,6 @@ N = args.balloons
 DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
 distribution = random.choice(DISTS)
 
-
 balloons = None
 if distribution == 'GAUSSIAN':
     balloons = GaussianBalloons(N)
@@ -34,7 +33,7 @@ elif distribution == 'GEOMETRIC':
     balloons = GeometricBalloons(N)
 else:
     raise Exception("no distribution found ;-;???")
-    
+
 B = balloons.getBallons()
 print(B)
 

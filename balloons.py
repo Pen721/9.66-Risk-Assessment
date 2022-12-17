@@ -28,7 +28,6 @@ class Balloons:
     def initializeBalloons(self):
         for i in range(self.max - self.min):
             self.probs[i] = self.p_range(i, i+1)
-        print(np.sum(self.probs))
         pop = random.choice(self.max, self.N, p=self.probs)
         pop = [i+1 for i in pop]
         self.balloons = pop
@@ -54,10 +53,10 @@ class GaussianBalloons(Balloons):
             self.balloons = B
 
 class UniformBalloons(Balloons):
-    def __init__(self, N = 10, min = None, max=None, B=None):
+    def __init__(self, N = 10, umin= None, umax=None, B=None):
         super().__init__(N)
         self.type = "UNIFORM"
-        self.dist = Uniform(N=N, min=min, max=max)
+        self.dist = Uniform(N=N, umin=umin, umax=umax)
         if(B == None):
             self.initializeBalloons()
         else:

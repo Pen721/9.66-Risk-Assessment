@@ -38,11 +38,8 @@ class Dist():
             return self.cdfmemo[x][y]
     
     def plotpdf(self):
-        x = [i for i in range(10)]
-        x = [i for i in range(10)]
-        y = [self.cdf(i, i+1) for i in range(10)]
-        plt.plot(x, y)
-        plt.show()
+        x = np.linspace(0, 10, num=10)
+        y = [self.pdf(i) for i in x]
 
 class Gaussian(Dist):
     def __init__(self, N = 10, mean = None, std = None):
@@ -71,42 +68,40 @@ class Gaussian(Dist):
 
 
 class Uniform(Dist):
-    def __init__(self, N = 10, max = None, min = None):
+    def __init__(self, N = 10, umin = None, umax = None):
         super().__init__()
         self.type = "UNIFORM"
-        self.max = max
-        self.min = min
+        self.umax = umax
+        self.umin = umin
 
-        pairs = [(i, j) for i in range(1, 10) for j in range(i+1, 11)]
+        pairs = [(i, j) for i in range(1, 9) for j in range(i+2, 11)]
         index = np.random.randint(0, len(pairs))
         pair = pairs[index]
-        if self.max == None:
-            self.max = pair[1]
-        if self.min == None:
-            self.min = pair[0]
-
-        print(self.min, self.max)
-        
-        self.mean = (self.max + self.min)/2.0
-        self.var = (1.0/12)*(self.max - self.min)**2
+        if self.umax == None:
+            self.umax = pair[1]
+        if self.umin == None:
+            self.umin = pair[0]
+        self.mean = (self.umax + self.umin)/2.0
+        self.var = (1.0/12)*(self.umax - self.umin)**2
         self.std = np.sqrt(self.var)
-        self.total = self.unnormalizedcdf(0, N)
+        self.total = self.unnormalizedcdf(0, self.max)
+
         self.plotpdf()
         print("self.total", self.total)
         
     def pdf(self, x):
-        if x < self.min:
+        if x < self.umin:
             return 0
-        if x > self.max: 
+        if x >= self.umax: 
             return 0
         else:
-            return 1/(self.max - self.min)
+            return 1/(self.umax - self.umin)
 
     def __str__(self):
-        return "Uniform max {} min {}".format(self.max, self.min)
+        return "Uniform max {} min {}".format(self.umax, self.umin)
 
     def shortString(self):
-        return "{} {} {}".format(self.type, self.N, self.min, self.max)
+        return "{} {} {}".format(self.type, self.N, self.umin, self.umax)
 
 class Geometric(Dist):
     def __init__(self, N = 10, p = None):
