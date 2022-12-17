@@ -3,7 +3,7 @@ import math
 import numpy as np
 import matplotlib  
 matplotlib.use('TkAgg')   
-import matplotlib.pyplot as plt  
+import matplotlib.pyplot as plt
 
 class Dist():
     def __init__(self):
@@ -36,6 +36,13 @@ class Dist():
         else:
             self.cdfmemo[x][y] = self.unnormalizedcdf(x, y) / self.total
             return self.cdfmemo[x][y]
+    
+    def plotpdf(self):
+        x = [i for i in range(10)]
+        x = [i for i in range(10)]
+        y = [self.cdf(i, i+1) for i in range(10)]
+        plt.plot(x, y)
+        plt.show()
 
 class Gaussian(Dist):
     def __init__(self, N = 10, mean = None, std = None):
@@ -70,15 +77,21 @@ class Uniform(Dist):
         self.max = max
         self.min = min
 
+        pairs = [(i, j) for i in range(1, 10) for j in range(i+1, 11)]
+        index = np.random.randint(0, len(pairs))
+        pair = pairs[index]
         if self.max == None:
-            self.max = random.randint(2, 10)
+            self.max = pair[1]
         if self.min == None:
-            self.min = random.randint(0, self.max - 2)
+            self.min = pair[0]
+
+        print(self.min, self.max)
         
         self.mean = (self.max + self.min)/2.0
         self.var = (1.0/12)*(self.max - self.min)**2
         self.std = np.sqrt(self.var)
         self.total = self.unnormalizedcdf(0, N)
+        self.plotpdf()
         print("self.total", self.total)
         
     def pdf(self, x):
@@ -122,7 +135,7 @@ class Limit(Dist):
         self.type = "LIMIT"
         self.limit = limit
         if limit == None:
-            self.limit = random.randint(0, 10)
+            self.limit = random.randint(1, 9)
         self.mean = self.limit
         self.var = 0
         self.total = self.unnormalizedcdf(0, N)

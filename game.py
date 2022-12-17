@@ -34,12 +34,11 @@ elif distribution == 'GEOMETRIC':
     balloons = GeometricBalloons(N)
 else:
     raise Exception("no distribution found ;-;???")
-
+    
 B = balloons.getBallons()
 print(B)
 
-player = Player(args.name, args.age, args.gender, args.course, balloons)
-player.addDistributionData()
+player = Player(args.name, args.age, args.gender, args.course, balloons, args.lossAversion)
 # Game Part
 
 pygame.init()
@@ -162,5 +161,6 @@ while currBalloonIdx < numberBalloons: # main game loop
 
         pygame.display.update()
 
+player.addDistributionData()
 player.writeData()
 player.writeStringToData("TOTAL SCORE {}".format(total_score))
