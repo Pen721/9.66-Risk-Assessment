@@ -13,7 +13,7 @@ parser.add_argument("--gender", default = "IDK", required=True)
 parser.add_argument("--age", type=int, default = 20, required=True)
 parser.add_argument("--balloons", type=int, default = 10, required=True)
 parser.add_argument("--course", type=int, default = 6, required=True)
-parser.add_argument("--lossAversion", type=bool, default = False, required=True)
+parser.add_argument("--lossAversion", default = "False", required=True)
 args = parser.parse_args()
 
 N = args.balloons
@@ -82,10 +82,11 @@ while currBalloonIdx < numberBalloons: # main game loop
     currScoreRect = currScoreTxt.get_rect()
     currScoreRect.center = (1.7 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
-    if not args.lossAversion:
-        totalScoreTxt = font.render('Total Earned: $' + str(total_score), True, RED, WHITE)
+    if args.lossAversion.lower() == "false":
+        totalPointsDisplayed = total_score
     else:
-        totalScoreTxt = font.render('Total Earned: $' + str(total_score+curr_pumps), True, RED, WHITE)
+        totalPointsDisplayed = total_score+curr_pumps
+    totalScoreTxt = font.render('Total Earned: $' + str(totalPointsDisplayed), True, RED, WHITE)
     totalScoreRect = totalScoreTxt.get_rect()
     totalScoreRect.center = (8.75 * SCREEN_WIDTH / 9, SCREEN_HEIGHT / 50)
 
@@ -118,20 +119,19 @@ while currBalloonIdx < numberBalloons: # main game loop
             print(curr_pumps)
 
             if curr_pumps == max_pumps: # BALLOON POPS 
-                # TODO - add time since last action / timestamp, going from start
-                player.addActionData(currBalloonIdx, curr_pumps, "POP", currKeyPressed-lastKeyPressed) 
+                player.addActionData(currBalloonIdx, curr_pumps, "POP", currKeyPressed-lastKeyPressed, totalPointsDisplayed) 
                 curr_pumps = 0 # reset current score
                 BALLOON_SIZE = 20 # reset to initial size
                 currBalloonIdx+=1
 
             else: # PUMP BALLOON 
                 BALLOON_SIZE += 5
-                player.addActionData(currBalloonIdx, curr_pumps, "PUMP", currKeyPressed-lastKeyPressed)
+                player.addActionData(currBalloonIdx, curr_pumps, "PUMP", currKeyPressed-lastKeyPressed, totalPointsDisplayed)
 
             lastKeyPressed = currKeyPressed # update logics
 
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
-            player.addActionData(currBalloonIdx, curr_pumps, "PASS", currKeyPressed-lastKeyPressed)
+            player.addActionData(currBalloonIdx, curr_pumps, "PASS", currKeyPressed-lastKeyPressed, totalPointsDisplayed)
             lastKeyPressed = pygame.time.get_ticks()
             total_score += curr_pumps
             curr_pumps = 0
