@@ -3,7 +3,7 @@ from datetime import datetime
 from dist import *
 
 class Player:
-    def __init__(self, name, age, gender, course, balloons, lossAversion):
+    def __init__(self, name, age, gender, course, balloons, lossAversion, exp):
         self.fileName = None
         self.name = name
         self.age = age
@@ -16,6 +16,7 @@ class Player:
         self.actions = [] #stores actions of player over time
         self.lossAversion = lossAversion
         self.now = None
+        self.exp=exp
 
     def nextBalloon(self, timeStamp, ):
         '''update actions'''
@@ -31,7 +32,7 @@ class Player:
        self.setFileName()
        print("WRITING DATA")
        print(self.actions)
-       f = open("data/{}".format(self.fileName), "a")
+       f = open("EXP{}data/{}".format(self.exp, self.fileName), "a")
        for i in self.actions:
            f.write("{} {} {} {} {}\n".format(i[0], i[1], i[2], i[3], i[4]))
        f.close()

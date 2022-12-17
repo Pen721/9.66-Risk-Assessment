@@ -13,13 +13,14 @@ parser.add_argument("--gender", default = "IDK", required=True)
 parser.add_argument("--age", type=int, default = 20, required=True)
 parser.add_argument("--balloons", type=int, default = 10, required=True)
 parser.add_argument("--course", type=int, default = 6, required=True)
+parser.add_argument("--exp", type=int, required=False)
 parser.add_argument("--lossAversion", default = "False", required=True)
 parser.add_argument("--dist", default = None, required=False)
 parser.add_argument("--obs", default = None, required=False)
 parser.add_argument("--constrainedHypothesis", default=False, required=False)
 args = parser.parse_args()
 
-
+exp = int(args.exp)
 #distirbutions and number of variables
 DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
 
@@ -32,7 +33,6 @@ if(args.dist != None):
 
     if distribution == 'GAUSSIAN':
         balloons = GaussianBalloons(N, int(diststring[2]), int(diststring[3]))
-        
     elif distribution == 'UNIFORM':
         balloons = UniformBalloons(N, int(diststring[2]), int(diststring[3]))
     elif distribution == 'LIMIT':
@@ -79,7 +79,7 @@ elif(args.constrainedHypothesis):
 B = balloons.getBallons()
 print(B)
 
-player = Player(args.name, args.age, args.gender, args.course, balloons, args.lossAversion)
+player = Player(args.name, args.age, args.gender, args.course, balloons, args.lossAversion, args.exp)
 # Game Part
 
 pygame.init()
