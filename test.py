@@ -7,13 +7,13 @@ import random
 
 def experiment():
     # number of experiments
-    K = 30
+    K = 1
     #number of balloons
     N = 20
     obs = []
     dists = []
-    decay = 0.8
-    HORIZON = 8
+    decay = 0.5
+    HORIZON = 12
     for i in range(K):
         b = GaussianBalloons(N=N)
         dists.append(b)
@@ -37,10 +37,10 @@ def experiment():
             p = a.play()
 
             horizon[j].append(i)
-            if(i==2):
-                if(points[2] > points[1]):
-                    print("SECOND HORIZON BETTER THAN FIRST")
-                    print(dists[j])
+            # if(i==2):
+            #     if(points[2] > points[1]):
+            #         print("SECOND HORIZON BETTER THAN FIRST")
+            #         print(dists[j])
             
             points[j].append(p * 100.0 / a.total_points())
             # points[i*K + j] = p
@@ -71,11 +71,40 @@ def distRange():
     c = GaussianBalloons(N=70, mean=0, std = 3)
     print(c.getBallons())
 
+def getAgent():
+    #human score 24
+    #gaussian mean 7 std 2 I think
+    obs = [2, 3, 1, 1, 4, 4, 1, 3, 5, 3]
+    decay = 1
+    horizon = 4
+    
+    decays = [i*1.0/10 for i in range(10)]
+
+    x = [i for i in range(horizon)]
+    human = [6 for i in range(horizon)]
+    y = [[] for i in range(len(decays))]
+
+    for i in range(len(decays)):
+        for j in range(horizon):
+            a = Agent(obs, j, decays[i])
+            y[i].append(a.play())
+
+    for decay in y:
+        plt.plot(x, decay, label='agent score, decay={}'.format(decays[i]))
+
+    plt.plot(x, human, '--', label='human score')
+    plt.xlabel('horizon')
+    plt.ylabel('points')
+    plt.title('agent points gained over decision horizons, obs =[2, 3, 1, 1, 4, 4, 1, 3, 5, 3]')
+    plt.savefig('graphs/Gaussian/[2, 3, 1, 1, 4, 4, 1, 3, 5, 3].pdf')
+    
+
 # GAUSSIAN mean 7 std 1
 # BALLOONS: [5,6,5,7,5,6,7,5,6,7]
 # probs: [0.0000, 0.0000, 0.0000, 0.0013, 0.0212, 0.1352, 0.3410, 0.3426, 0.1370, 0.0217]
 
 if __name__ == "__main__":
     # distRange()
-    experiment()
+    # experiment()
+    getAgent()
     print("Everything passed")
