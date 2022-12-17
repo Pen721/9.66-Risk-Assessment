@@ -13,6 +13,7 @@ parser.add_argument("--gender", default = "IDK", required=True)
 parser.add_argument("--age", type=int, default = 20, required=True)
 parser.add_argument("--balloons", type=int, default = 10, required=True)
 parser.add_argument("--course", type=int, default = 6, required=True)
+parser.add_argument("--lossAversion", type=bool, default = False, required=True)
 args = parser.parse_args()
 
 N = args.balloons
@@ -81,7 +82,10 @@ while currBalloonIdx < numberBalloons: # main game loop
     currScoreRect = currScoreTxt.get_rect()
     currScoreRect.center = (1.7 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
-    totalScoreTxt = font.render('Total Earned: $' + str(total_score), True, RED, WHITE)
+    if not args.lossAversion:
+        totalScoreTxt = font.render('Total Earned: $' + str(total_score), True, RED, WHITE)
+    else:
+        totalScoreTxt = font.render('Total Earned: $' + str(total_score+curr_pumps), True, RED, WHITE)
     totalScoreRect = totalScoreTxt.get_rect()
     totalScoreRect.center = (8.75 * SCREEN_WIDTH / 9, SCREEN_HEIGHT / 50)
 
@@ -89,7 +93,7 @@ while currBalloonIdx < numberBalloons: # main game loop
     upKeyText = font.render('Press Up to Collect $', True, BLACK, WHITE)
     upKeyRect = upKeyText.get_rect()
 
-    rightKeyText = font.render('Press right to pump', True, BLACK, WHITE)
+    rightKeyText = font.render('Press space to pump', True, BLACK, WHITE)
     rightKeyRect = upKeyText.get_rect()
 
     rightKeyRect.center = (15*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
@@ -103,7 +107,7 @@ while currBalloonIdx < numberBalloons: # main game loop
             # record data
             sys.exit()
 
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT: # INC BALLOON SIZE
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE: # INC BALLOON SIZE
             curr_pumps += 1
 
             print("MAX PUMPS")
