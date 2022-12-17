@@ -67,6 +67,7 @@ lastTimePressed = pygame.time.get_ticks()
 
 # add START condition here 
 
+lastTimePressed = pygame.time.get_ticks()
 
 while currBalloonIdx < numberBalloons: # main game loop
     max_pumps = B[currBalloonIdx]
@@ -76,11 +77,11 @@ while currBalloonIdx < numberBalloons: # main game loop
     currBalloonTxt = font.render('On Balloon #: ' + str(currBalloonIdx+1), True, RED, WHITE)
     currBalloonRect = currBalloonTxt.get_rect()
 
-    currScoreTxt = font.render('Pumps: ' + str(curr_pumps), True, BLUE, WHITE)
+    currScoreTxt = font.render('Pumps: $' + str(curr_pumps), True, BLUE, WHITE)
     currScoreRect = currScoreTxt.get_rect()
     currScoreRect.center = (1.7 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
-    totalScoreTxt = font.render('Total Earned: ' + str(total_score), True, RED, WHITE)
+    totalScoreTxt = font.render('Total Earned: $' + str(total_score), True, RED, WHITE)
     totalScoreRect = totalScoreTxt.get_rect()
     totalScoreRect.center = (8.75 * SCREEN_WIDTH / 9, SCREEN_HEIGHT / 50)
 
@@ -95,13 +96,14 @@ while currBalloonIdx < numberBalloons: # main game loop
     upKeyRect.center = (7 * SCREEN_WIDTH / 8, 5 * SCREEN_HEIGHT / 50)
 
     for event in pygame.event.get():
+        currKeyPressed = pygame.time.get_ticks()
+
         if event.type == QUIT: 
             pygame.quit()
             # record data
             sys.exit()
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT: # INC BALLOON SIZE
-            currKeyPressed = pygame.time.get_ticks()
             curr_pumps += 1
 
             print("MAX PUMPS")
