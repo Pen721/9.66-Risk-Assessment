@@ -6,7 +6,7 @@ import argparse
 from pygame.locals import *
 from numpy import random
 
-# TODO: start button, time stamp, on game screen
+# TODO: start button on game screen
 parser = argparse.ArgumentParser()
 parser.add_argument("--name", default= "PENROLINE", required=True)
 parser.add_argument("--gender", default = "IDK", required=True)
@@ -40,8 +40,6 @@ print(B)
 player = Player(args.name, args.age, args.gender, args.course, balloons)
 player.addDistributionData()
 # Game Part
-
-# TODO: save data 
 
 pygame.init()
 SCREEN_HEIGHT = 800
@@ -120,6 +118,8 @@ while currBalloonIdx < numberBalloons: # main game loop
                 BALLOON_SIZE += 5
                 player.addActionData(currBalloonIdx, curr_pumps, "PUMP", currKeyPressed-lastKeyPressed)
 
+            lastKeyPressed = currKeyPressed # update logics
+
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
             player.addActionData(currBalloonIdx, curr_pumps, "PASS", currKeyPressed-lastKeyPressed)
             lastKeyPressed = pygame.time.get_ticks()
@@ -128,7 +128,7 @@ while currBalloonIdx < numberBalloons: # main game loop
             BALLOON_SIZE = 20 # reset to initial size
             currBalloonIdx+=1
         
-        lastKeyPressed = currKeyPressed # update logics
+            lastKeyPressed = currKeyPressed # update logics
 
         DISPLAYSURF.fill(WHITE)  # white background
         DISPLAYSURF.blit(currBalloonTxt, currBalloonRect)
