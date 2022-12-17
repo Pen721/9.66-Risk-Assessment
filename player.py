@@ -17,6 +17,7 @@ class Player:
         self.lossAversion = lossAversion
         self.now = None
         self.exp=exp
+        self.folder = "data/exp{}/".format(self.exp)
 
     def nextBalloon(self, timeStamp, ):
         '''update actions'''
@@ -32,14 +33,14 @@ class Player:
        self.setFileName()
        print("WRITING DATA")
        print(self.actions)
-       f = open("EXP{}data/{}".format(self.exp, self.fileName), "a")
+       f = open("{}{}".format(self.folder, self.fileName), "a")
        for i in self.actions:
            f.write("{} {} {} {} {}\n".format(i[0], i[1], i[2], i[3], i[4]))
        f.close()
 
     def writeStringToData(self, string):
         self.setFileName()
-        f = open("data/{}".format(self.fileName), "a")
+        f = open("{}{}".format(self.folder, self.fileName), "a")
         f.write(string)
         f.close()
     
@@ -58,13 +59,12 @@ class Player:
 
     def addDistributionData(self):
         self.setFileName()
-        f = open("data/{}".format(self.fileName), "a")
+        f = open("{}{}".format(self.folder, self.fileName), "a")
 
         dist = self.balloons.dist
 
         f.write(self.playerinfotostring())
-        f.write(dist.shortString())
-        f.write("\n")
+        f.write('\n')
         for i in self.pops:
-            f.write("i,")
+            f.write("{},".format(i))
         f.write("\n")
