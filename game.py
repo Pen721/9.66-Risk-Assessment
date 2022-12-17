@@ -118,7 +118,6 @@ while currBalloonIdx < numberBalloons: # main game loop
             print(curr_pumps)
 
             if curr_pumps == max_pumps: # BALLOON POPS 
-                # TODO - add time since last action / timestamp, going from start
                 player.addActionData(currBalloonIdx, curr_pumps, "POP", currKeyPressed-lastKeyPressed) 
                 curr_pumps = 0 # reset current score
                 BALLOON_SIZE = 20 # reset to initial size
