@@ -64,6 +64,10 @@ BLACK = (0,0,0)
 # https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
 
 lastTimePressed = pygame.time.get_ticks()
+
+# add START condition here 
+
+
 while currBalloonIdx < numberBalloons: # main game loop
     max_pumps = B[currBalloonIdx]
 
@@ -81,14 +85,14 @@ while currBalloonIdx < numberBalloons: # main game loop
     totalScoreRect.center = (8.75 * SCREEN_WIDTH / 9, SCREEN_HEIGHT / 50)
 
     # instruction text
-    upKeyText = font.render('Up: Collect $', True, BLACK, WHITE)
+    upKeyText = font.render('Press Up to Collect $', True, BLACK, WHITE)
     upKeyRect = upKeyText.get_rect()
 
     rightKeyText = font.render('Press right to pump', True, BLACK, WHITE)
     rightKeyRect = upKeyText.get_rect()
 
-    rightKeyRect.center = (8.5*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
-    upKeyRect.center = (2.3 * SCREEN_WIDTH / 3, 5 * SCREEN_HEIGHT / 50)
+    rightKeyRect.center = (15*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
+    upKeyRect.center = (7 * SCREEN_WIDTH / 8, 5 * SCREEN_HEIGHT / 50)
 
     for event in pygame.event.get():
         if event.type == QUIT: 
