@@ -71,12 +71,22 @@ lastTimePressed = pygame.time.get_ticks()
 lastTimePressed = pygame.time.get_ticks()
 
 while currBalloonIdx < numberBalloons: # main game loop
+
+    if currBalloonIdx % 2 == 0: # have color alternate between conseq. balloons
+        BALLOON_COLOR = BLUE
+    else:
+        BALLOON_COLOR = RED
+
     max_pumps = B[currBalloonIdx]
 
     font = pygame.font.Font('freesansbold.ttf', 32)
     # score text
-    currBalloonTxt = font.render('On Balloon #: ' + str(currBalloonIdx+1), True, RED, WHITE)
+    currBalloonTxt = font.render('On Balloon #: ', True, RED, WHITE)
     currBalloonRect = currBalloonTxt.get_rect()
+
+    currBalloonNumber = font.render(str(currBalloonIdx+1), True, BALLOON_COLOR, WHITE)
+    currNumberRect = currBalloonNumber.get_rect()
+    currNumberRect.center = (1.15 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
     currScoreTxt = font.render('Pumps: $' + str(curr_pumps), True, BLUE, WHITE)
     currScoreRect = currScoreTxt.get_rect()
@@ -91,14 +101,14 @@ while currBalloonIdx < numberBalloons: # main game loop
     totalScoreRect.center = (8.75 * SCREEN_WIDTH / 9, SCREEN_HEIGHT / 50)
 
     # instruction text
-    upKeyText = font.render('Press Up to Collect $', True, BLACK, WHITE)
+    upKeyText = font.render('Press X to Collect $', True, BLACK, WHITE)
     upKeyRect = upKeyText.get_rect()
 
     rightKeyText = font.render('Press space to pump', True, BLACK, WHITE)
-    rightKeyRect = upKeyText.get_rect()
+    rightKeyRect = rightKeyText.get_rect()
 
-    rightKeyRect.center = (15*SCREEN_WIDTH/50, 5 * SCREEN_HEIGHT / 50)
-    upKeyRect.center = (7 * SCREEN_WIDTH / 8, 5 * SCREEN_HEIGHT / 50)
+    rightKeyRect.center = (15*SCREEN_WIDTH/50, SCREEN_HEIGHT / 10)
+    upKeyRect.center = (7 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 10)
 
     for event in pygame.event.get():
         currKeyPressed = pygame.time.get_ticks()
@@ -130,7 +140,7 @@ while currBalloonIdx < numberBalloons: # main game loop
 
             lastKeyPressed = currKeyPressed # update logics
 
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP: # NEXT BALLOON
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_x: # NEXT BALLOON
             player.addActionData(currBalloonIdx, curr_pumps, "PASS", currKeyPressed-lastKeyPressed, totalPointsDisplayed)
             lastKeyPressed = pygame.time.get_ticks()
             total_score += curr_pumps
@@ -142,15 +152,13 @@ while currBalloonIdx < numberBalloons: # main game loop
 
         DISPLAYSURF.fill(WHITE)  # white background
         DISPLAYSURF.blit(currBalloonTxt, currBalloonRect)
+        DISPLAYSURF.blit(currBalloonNumber, currNumberRect)
         DISPLAYSURF.blit(currScoreTxt, currScoreRect)
         DISPLAYSURF.blit(totalScoreTxt, totalScoreRect)
         DISPLAYSURF.blit(rightKeyText, rightKeyRect)
         DISPLAYSURF.blit(upKeyText, upKeyRect)
 
-        if currBalloonIdx % 2 == 0: # have color alternate between conseq. balloons
-            pygame.draw.circle(DISPLAYSURF, BLUE, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), BALLOON_SIZE)
-        else:
-            pygame.draw.circle(DISPLAYSURF, RED, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), BALLOON_SIZE)
+        pygame.draw.circle(DISPLAYSURF, BALLOON_COLOR, (SCREEN_WIDTH/2, SCREEN_HEIGHT/2), BALLOON_SIZE)
 
         pygame.display.update()
 
