@@ -53,7 +53,7 @@ class Player:
             self.fileName = "{}_{}_{}_{}_{}_{}_{}.txt".format(self.name, self.age, self.gender, self.N, self.course, now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString())
 
     def playerinfotostring(self):
-        return "{} {} {} {} {} {} {} {}.txt".format(self.name, self.age, self.gender, self.N, self.course, self.now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString(), self.lossAversion)
+        return "{} {} {} {} {} {} {} {}".format(self.name, self.age, self.gender, self.N, self.course, self.now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString(), self.lossAversion)
 
     def addDistributionData(self):
         self.setFileName()
@@ -64,4 +64,6 @@ class Player:
         f.write(self.playerinfotostring())
         f.write(dist.shortString())
         f.write("\n")
-        f.write("{}\n".format(self.pops))
+        for i in self.pops:
+            f.write("i,")
+        f.write("\n")

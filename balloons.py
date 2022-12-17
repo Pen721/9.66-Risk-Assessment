@@ -41,6 +41,8 @@ class Balloons:
     def p_range(self, x, y):
         return self.dist.cdf(x, y)
 
+    def setBalloons(self, b):
+        self.balloons = b.copy()
 
 class GaussianBalloons(Balloons):
     def __init__(self, N = 10, mean = None, std = None, B=None):

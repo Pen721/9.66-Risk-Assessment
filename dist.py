@@ -101,14 +101,14 @@ class Uniform(Dist):
         return "Uniform max {} min {}".format(self.umax, self.umin)
 
     def shortString(self):
-        return "{} {} {}".format(self.type, self.N, self.umin, self.umax)
+        return "{} {} {} {}".format(self.type, self.N, self.umin, self.umax)
 
 class Geometric(Dist):
     def __init__(self, N = 10, p = None):
         super().__init__()
         self.type = "GEOMETRIC"
         if p == None:
-            self.p = random.randint(1, 9) * 1.0 / 10
+            self.p = random.randint(1, 5) * 1.0 / 10
         else:
             self.p = p
         self.mean = 1.0/self.p

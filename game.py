@@ -14,25 +14,67 @@ parser.add_argument("--age", type=int, default = 20, required=True)
 parser.add_argument("--balloons", type=int, default = 10, required=True)
 parser.add_argument("--course", type=int, default = 6, required=True)
 parser.add_argument("--lossAversion", default = "False", required=True)
+parser.add_argument("--dist", default = None, required=False)
+parser.add_argument("--obs", default = None, required=False)
+parser.add_argument("--constrainedHypothesis", default=False, required=False)
 args = parser.parse_args()
 
-N = args.balloons
 
 #distirbutions and number of variables
 DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
-distribution = random.choice(DISTS)
 
-balloons = None
-if distribution == 'GAUSSIAN':
-    balloons = GaussianBalloons(N)
-elif distribution == 'UNIFORM':
-    balloons = UniformBalloons(N)
-elif distribution == 'LIMIT':
-    balloons = LimitBalloons(N)
-elif distribution == 'GEOMETRIC':
-    balloons = GeometricBalloons(N)
-else:
-    raise Exception("no distribution found ;-;???")
+N = int(args.balloons)
+if(args.dist != None):
+    diststring = args.dist.split()
+    print(diststring)
+    distribution = diststring[0] 
+    N = int(diststring[1])
+
+    if distribution == 'GAUSSIAN':
+        balloons = GaussianBalloons(N, int(diststring[2]), int(diststring[3]))
+        
+    elif distribution == 'UNIFORM':
+        balloons = UniformBalloons(N, int(diststring[2]), int(diststring[3]))
+    elif distribution == 'LIMIT':
+        balloons = LimitBalloons(N, int(diststring[2]))
+    elif distribution == 'GEOMETRIC':
+        balloons = GeometricBalloons(N, int(diststring[2]))
+    else:
+        raise Exception("no distribution found ;-;???")
+    
+    if(args.obs != None):
+        obs =  args.obs.split(',')
+        obs = [int(i) for i in obs]
+        if(len(obs) != N):
+            raise Exception("observation size not equal to N!")
+        balloons.setBalloons(obs)
+
+elif(not args.constrainedHypothesis):
+    distribution = random.choice(DISTS)
+    balloons = None
+    if distribution == 'GAUSSIAN':
+        balloons = GaussianBalloons(N)
+    elif distribution == 'UNIFORM':
+        balloons = UniformBalloons(N)
+    elif distribution == 'LIMIT':
+        balloons = LimitBalloons(N)
+    elif distribution == 'GEOMETRIC':
+        balloons = GeometricBalloons(N)
+    else:
+        raise Exception("no distribution found ;-;???")
+elif(args.constrainedHypothesis):
+    distribution = random.choice(DISTS)
+    balloons = None
+    if distribution == 'GAUSSIAN':
+        balloons = GaussianBalloons(N, 5, 2)
+    elif distribution == 'UNIFORM':
+        balloons = UniformBalloons(N, 0, 11)
+    elif distribution == 'LIMIT':
+        balloons = LimitBalloons(N, 5)
+    elif distribution == 'GEOMETRIC':
+        balloons = GeometricBalloons(N, 0.3)
+    else:
+        raise Exception("no distribution found ;-;???")
 
 B = balloons.getBallons()
 print(B)
