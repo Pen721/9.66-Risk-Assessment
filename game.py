@@ -13,7 +13,7 @@ parser.add_argument("--gender", default = "IDK", required=True)
 parser.add_argument("--age", type=int, default = 20, required=True)
 parser.add_argument("--balloons", type=int, default = 10, required=True)
 parser.add_argument("--course", type=int, default = 6, required=True)
-parser.add_argument("--lossAversion", type=bool, default = False, required=True)
+parser.add_argument("--lossAversion", default = "False", required=True)
 args = parser.parse_args()
 
 N = args.balloons
@@ -82,7 +82,7 @@ while currBalloonIdx < numberBalloons: # main game loop
     currScoreRect = currScoreTxt.get_rect()
     currScoreRect.center = (1.7 * SCREEN_WIDTH / 3, SCREEN_HEIGHT / 50)
 
-    if not args.lossAversion:
+    if args.lossAversion.lower() == "false":
         totalPointsDisplayed = total_score
     else:
         totalPointsDisplayed = total_score+curr_pumps
