@@ -33,9 +33,9 @@ python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 -
 
 # Experiment 3 - Hypothesis Space
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=2 --lossAversion=True --seenGraphs=True
+python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=3 --lossAversion=True --seenGraphs=True
 ```
 
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=2 --lossAversion=True --seenGraphs=False
+python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=3 --lossAversion=True --seenGraphs=False
 ```
