@@ -1,4 +1,4 @@
-from agent import Agent
+from agent import Agent, LossAverseAgent, NotLossAverseAgent
 from balloons import GaussianBalloons
 import matplotlib  
 matplotlib.use('TkAgg')   
@@ -37,6 +37,7 @@ def experiment():
         for j in range(K):
             o = obs[j]
             a = Agent(o, i, decay)
+            a = LossAverseAgent(o, i, decay)
             p = a.play()
 
             horizon[j].append(i)
@@ -77,29 +78,60 @@ def distRange():
 def getAgent():
     #human score 24
     #gaussian mean 7 std 2 I think
-    obs = [2, 3, 1, 1, 4, 4, 1, 3, 5, 3]
+    obs = [1,5,5,4,1,6,7,5,4,7]
     decay = 1
-    horizon = 4
-    
-    decays = [i*1.0/10 for i in range(10)]
+    horizon = 8
+    decays = [0.1, 0.3, 0.5, 0.7, 0.9, 1]
 
     x = [i for i in range(horizon)]
-    human = [6 for i in range(horizon)]
+    human = [14 for i in range(horizon)]
     y = [[] for i in range(len(decays))]
 
     for i in range(len(decays)):
         for j in range(horizon):
             a = Agent(obs, j, decays[i])
             y[i].append(a.play())
+            print(j, decays[i], a.mostlikely)
+            print(a.lastSwitch)
 
-    for decay in y:
-        plt.plot(x, decay, label='agent score, decay={}'.format(decays[i]))
+    for i in range(len(y)):
+        plt.plot(x, y[i], label='agent score, decay={}'.format(round(1-decays[i], 1)))
 
     plt.plot(x, human, '--', label='human score')
+    plt.legend(loc='upper right')
     plt.xlabel('horizon')
     plt.ylabel('points')
-    plt.title('agent points gained over decision horizons, obs =[2, 3, 1, 1, 4, 4, 1, 3, 5, 3]')
-    plt.savefig('graphs/Gaussian/[2, 3, 1, 1, 4, 4, 1, 3, 5, 3].pdf')
+    plt.title('agent points gained over decision horizons'.format(obs))
+    plt.savefig('graphs/Gaussian/{}.pdf'.format(obs))
+
+def getSingleAgent():
+    #human score 24
+    #gaussian mean 7 std 2 I think
+    obs = [1,5,5,4,1,6,7,5,4,7]
+    decay = 1
+    horizon = 12
+    decays = [1]
+
+    x = [i for i in range(horizon)]
+    human = [14 for i in range(horizon)]
+    y = [[] for i in range(len(decays))]
+
+    for i in range(len(decays)):
+        a = Agent(obs, 5, decays[i])
+        y[i].append(a.play())
+        print(y[i])
+        print(a.mostlikely)
+        print(a.lastSwitch)
+
+    # for i in range(len(y)):
+    #     plt.plot(x, y[i], label='agent score, varying horizon'.format(round(1-decays[i], 1)))
+
+    # plt.plot(x, human, '--', label='human score')
+    # plt.legend(loc='upper right')
+    # plt.xlabel('horizon')
+    # plt.ylabel('points')
+    # plt.title('agent points with varying horizon'.format(obs))
+    # plt.savefig('graphs/Gaussian/26horizon.pdf')
 
 def makeGraphs():
     dist = Geometric()
@@ -118,5 +150,5 @@ def makeGraphs():
 if __name__ == "__main__":
     # distRange()
     # experiment()
-    makeGraphs()
+    getAgent()
     print("Everything passed")
