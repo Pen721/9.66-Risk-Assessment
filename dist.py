@@ -113,6 +113,7 @@ class Geometric(Dist):
             self.p = p
         self.mean = 1.0/self.p
         self.var = (1-self.p)/(self.p**2)
+        self.std = np.sqrt(self.var)
         self.total = self.unnormalizedcdf(0, N)
         
     def pdf(self, x):
@@ -133,6 +134,7 @@ class Limit(Dist):
             self.limit = random.randint(1, 9)
         self.mean = self.limit
         self.var = 0
+        self.std = 0
         self.total = self.unnormalizedcdf(0, N)
         print("self.total", self.total)
         

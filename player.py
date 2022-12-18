@@ -3,7 +3,7 @@ from datetime import datetime
 from dist import *
 
 class Player:
-    def __init__(self, name, age, gender, course, balloons, lossAversion, exp, seenGraphs):
+    def __init__(self, name, age, gender, course, balloons, lossAversion, exp, seenGraphs, time=None):
         self.fileName = None
         self.name = name
         self.age = age
@@ -15,10 +15,13 @@ class Player:
         self.course = course
         self.actions = [] #stores actions of player over time
         self.lossAversion = lossAversion
-        self.now = None
+        self.now = time
         self.exp=exp
         self.folder = "data/exp{}/".format(self.exp)
         self.seenGraphs = seenGraphs
+        self.finalScore = None
+        self.points = []
+
 
     def nextBalloon(self, timeStamp, ):
         '''update actions'''
@@ -59,6 +62,9 @@ class Player:
     def playerinfotostring(self):
         return "{} {} {} {} {} {} {} {} {}".format(self.name, self.age, self.gender, self.N, self.course, self.now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString(), self.lossAversion, self.seenGraphs)
 
+    def playerinfonotime(self):
+        return "{} {} {} {} {} {} {} lossAverse={} seenGraphs={}".format(self.exp, self.name, self.age, self.gender, self.N, self.course, self.balloons.dist.shortString(), self.lossAversion, self.seenGraphs)
+
     def addDistributionData(self):
         self.setFileName()
         f = open("{}{}".format(self.folder, self.fileName), "a")
@@ -70,3 +76,19 @@ class Player:
         for i in self.pops:
             f.write("{},".format(i))
         f.write("\n")
+
+    def __str__(self,):
+        result = self.balloons.__str__() + "\n" + "{}".format(self.pops) + "\n" + "score: {}".format(self.finalScore)
+        for i in self.actions:
+            result += "{}\n".format(i)
+        return result
+
+    def pointPerBalloon(self):
+        points = [-1] * self.N
+        
+        for a in self.actions:
+            for i in range(self.N):
+                if(a[0] == i):
+                    points[i] = a[-1]
+        self.points = points
+        return points

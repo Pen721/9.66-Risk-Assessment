@@ -1,5 +1,6 @@
 from agent import Agent, LossAverseAgent, NotLossAverseAgent
-from balloons import GaussianBalloons
+from balloons import GaussianBalloons, UniformBalloons, LimitBalloons, GeometricBalloons
+from dist import Gaussian, Limit, Uniform, Geometric
 import matplotlib  
 matplotlib.use('TkAgg')   
 import matplotlib.pyplot as plt 
@@ -7,6 +8,8 @@ import random
 import numpy as np
 from dist import Gaussian, Geometric, Uniform, Limit
 import math
+import os
+from player import Player
 
 def experiment():
     # number of experiments
@@ -36,7 +39,6 @@ def experiment():
     for i in range(HORIZON):
         for j in range(K):
             o = obs[j]
-            a = Agent(o, i, decay)
             a = LossAverseAgent(o, i, decay)
             p = a.play()
 
@@ -143,12 +145,116 @@ def makeGraphs():
     plt.xlabel('balloon size')
     plt.savefig("dists/{}.pdf".format(dist.shortString()))
 
+def readPlayer():
+    p = Player(self, "GEN", 0, "N", 0, 10, True, 0, False)
+    p.getPlayerFromFile(1)
+
+
+def readData(exp):
+    folder = os.path.join(os.getcwd(), "data/exp{}".format(exp))
+
+    for filename in os.listdir(folder):
+        with open(os.path.join(folder, filename), 'r') as f: # open in readonly mode
+            if(filename == ".DS_Store"):
+                continue
+            # print(filename)
+            filestring = f.readlines()
+            # print(filestring)
+
+            diststring = filestring[0].split()
+            # print(diststring)
+            [name, age, gender, N, course, time] = diststring[:6]
+            course = int(course)
+            disttype = diststring[6]
+
+            N = int(diststring[7])
+            if(disttype == "GAUSSIAN"):
+                mean = int(diststring[8])
+                std = int(diststring[9])
+                dist = Gaussian(N, mean, std)
+                balloons = GaussianBalloons(N, mean, std)
+            elif(disttype == "UNIFORM"):
+                umin = int(diststring[8])
+                umax = int(diststring[9])
+                dist = Uniform(N, umin, umax)
+                balloons = UniformBalloons(N, umin, umax)
+            elif(disttype=="LIMIT"):
+                limit = int(diststring[8])
+                dist = Limit(N, limit)
+                balloons = LimitBalloons(N, limit)
+            elif(disttype=="GEOMETRIC"):
+                p = float(diststring[8])
+                dist = Geometric(N, p)
+                balloons = GeometricBalloons(N, p)
+            else:
+                raise Exception("UNKNOWN DISTRIBUTION {}".format(disttype))
+            lossAversion = eval(diststring[-2])
+            seenGraphs = eval(diststring[-1])
+            # print(lossAversion, seenGraphs)
+
+            obs = filestring[1].split(",")[:-1]
+            obs = [int(i) for i in obs]
+            # print(obs)
+            balloons.setBalloons(obs)
+            player = Player(name, age, gender, course, balloons, lossAversion, exp, seenGraphs, time=time)
+
+            score = int(filestring[-1].split()[-1])
+            player.finalScore = score
+
+            for i in range(2, len(filestring) - 1):
+                action = filestring[i].split()
+                [index, size, action, time, score] = action
+                player.addActionData(int(index), int(size), action, int(time), int(score))
+
+            # print(player)
+            f.close()
+            generateGamePlayGraph(player)
+
+def generateGamePlayGraph(player):
+    #assumes player and agent have already played
+    horizon = [1, 2, 3]
+    decay = [1, 0.9]
+
+    x = [i for i in range(player.N)]
+    maxpoints = player.pops
+    print(maxpoints)
+    p = player.pointPerBalloon()
+
+    for i in range(1, len(p)):
+        maxpoints[i] += maxpoints[i-1]
+    
+    for h in horizon:
+        for d in decay:
+            ap = getAgentPoints(player.pops, h, d)
+            plt.plot(x, ap, label='agent score h={} d={}'.format(h, d))
+    plt.plot(x, p, label='player score')
+    plt.plot(x, maxpoints, '--', label='theoretical max score')
+
+    plt.legend(loc='upper left')
+    plt.xlabel('balloon index')
+    plt.ylabel('points')
+    plt.title('points gained over time')
+    plt.savefig('data/gameplay/{} AGENT H={} decay={}.pdf'.format(player.playerinfonotime(), h, d))
+    plt.clf()
+
+def getAgentPoints(obs, h, d):
+    agent = Agent(obs, h, d)
+    agent.play()
+    agentp = agent.pointPerBalloon().copy()
+    return agentp
+
 # GAUSSIAN mean 7 std 1
 # BALLOONS: [5,6,5,7,5,6,7,5,6,7]
 # probs: [0.0000, 0.0000, 0.0000, 0.0013, 0.0212, 0.1352, 0.3410, 0.3426, 0.1370, 0.0217]
 
 if __name__ == "__main__":
+    # readData(2)
+    # readData(3)
+    a = Agent([1,1,3,2,2,2,1,1,1,3], 4, 0.9)
+    a.play()
+    print(a.actions)
+    # do your stuff
     # distRange()
     # experiment()
-    getAgent()
-    print("Everything passed")
+    # readPlayer(1, )
+    # print("Everything passed")
