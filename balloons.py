@@ -28,7 +28,6 @@ class Balloons:
     def initializeBalloons(self):
         for i in range(self.max - self.min):
             self.probs[i] = self.p_range(i, i+1)
-        print(np.sum(self.probs))
         pop = random.choice(self.max, self.N, p=self.probs)
         pop = [i+1 for i in pop]
         self.balloons = pop
@@ -42,31 +41,49 @@ class Balloons:
     def p_range(self, x, y):
         return self.dist.cdf(x, y)
 
+    def setBalloons(self, b):
+        self.balloons = b.copy()
 
 class GaussianBalloons(Balloons):
-    def __init__(self, N = 10, mean = None, std = None):
+    def __init__(self, N = 10, mean = None, std = None, B=None):
         super().__init__(N)
         self.type = "GAUSSIAN"
-        self.dist = Gaussian(mean=mean, std=std)
-        self.initializeBalloons()
+        self.dist = Gaussian(N=N, mean=mean, std=std)
+        if(B == None):
+            self.initializeBalloons()
+        else:
+            self.balloons = B
 
 class UniformBalloons(Balloons):
-    def __init__(self, N = 10):
+    def __init__(self, N = 10, umin= None, umax=None, B=None):
         super().__init__(N)
         self.type = "UNIFORM"
-        self.dist = Uniform()
-        self.initializeBalloons()
+        self.dist = Uniform(N=N, umin=umin, umax=umax)
+        if(B == None):
+            self.initializeBalloons()
+        else:
+            self.balloons = B
 
 class GeometricBalloons(Balloons):
-    def __init__(self, N = 10):
+    def __init__(self, N = 10, p=None, B=None):
         super().__init__(N)
         self.type = "GEOMETRIC"
-        self.dist = Geometric()
-        self.initializeBalloons()
+        self.dist = Geometric(N=N, p=p)
+        if(B == None):
+            self.initializeBalloons()
+        else:
+            self.balloons = B
         
 class LimitBalloons(Balloons):
-    def __init__(self, N = 10):
+    def __init__(self, N = 10, limit=None, B=None):
         super().__init__(N)
         self.type = "LIMIT"
-        self.dist = Limit()
+        self.dist = Limit(N=N, limit=limit)
+        print("LImIT DIST'")
+        print(self.dist)
         self.initializeBalloons()
+        if(B == None):
+            self.initializeBalloons()
+        else:
+            self.balloons = B
+        
