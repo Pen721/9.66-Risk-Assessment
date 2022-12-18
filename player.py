@@ -47,6 +47,7 @@ class Player:
     
     def addActionData(self, index, size, action, time, score):
         'index and size of of the balloon -> if we are on the first balloon and its size 3, it would be index 0 size 3, action is either a string of PUMP or PASS, time is the time since the last action (optional)'
+        'totalPoints is defined in accordance with lossAversion settings (so whatever is on screen)'
         self.actions.append([index, size, action, time, score])
     
     def setFileName(self):
