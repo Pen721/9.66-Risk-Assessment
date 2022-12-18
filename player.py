@@ -3,7 +3,7 @@ from datetime import datetime
 from dist import *
 
 class Player:
-    def __init__(self, name, age, gender, course, balloons, lossAversion, exp):
+    def __init__(self, name, age, gender, course, balloons, lossAversion, exp, seenGraphs):
         self.fileName = None
         self.name = name
         self.age = age
@@ -18,6 +18,7 @@ class Player:
         self.now = None
         self.exp=exp
         self.folder = "data/exp{}/".format(self.exp)
+        self.seenGraphs = seenGraphs
 
     def nextBalloon(self, timeStamp, ):
         '''update actions'''
@@ -55,7 +56,7 @@ class Player:
             self.fileName = "{}_{}_{}_{}_{}_{}_{}.txt".format(self.name, self.age, self.gender, self.N, self.course, now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString())
 
     def playerinfotostring(self):
-        return "{} {} {} {} {} {} {} {}".format(self.name, self.age, self.gender, self.N, self.course, self.now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString(), self.lossAversion)
+        return "{} {} {} {} {} {} {} {} {}".format(self.name, self.age, self.gender, self.N, self.course, self.now.strftime("%Y-%m-%d_%H:%M"), self.balloons.dist.shortString(), self.lossAversion, self.seenGraphs)
 
     def addDistributionData(self):
         self.setFileName()

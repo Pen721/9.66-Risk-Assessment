@@ -17,7 +17,7 @@ parser.add_argument("--exp", type=int, required=False)
 parser.add_argument("--lossAversion", default = "False", required=True)
 parser.add_argument("--dist", default = None, required=False)
 parser.add_argument("--obs", default = None, required=False)
-parser.add_argument("--constrainedHypothesis", default=False, required=False)
+parser.add_argument("--seenGraphs", default=False, required=False)
 args = parser.parse_args()
 
 exp = int(args.exp)
@@ -49,7 +49,7 @@ if(args.dist != None):
             raise Exception("observation size not equal to N!")
         balloons.setBalloons(obs)
 
-elif(not args.constrainedHypothesis):
+else:
     distribution = random.choice(DISTS)
     balloons = None
     if distribution == 'GAUSSIAN':
@@ -62,24 +62,11 @@ elif(not args.constrainedHypothesis):
         balloons = GeometricBalloons(N)
     else:
         raise Exception("no distribution found ;-;???")
-elif(args.constrainedHypothesis):
-    distribution = random.choice(DISTS)
-    balloons = None
-    if distribution == 'GAUSSIAN':
-        balloons = GaussianBalloons(N, 5, 2)
-    elif distribution == 'UNIFORM':
-        balloons = UniformBalloons(N, 0, 11)
-    elif distribution == 'LIMIT':
-        balloons = LimitBalloons(N, 5)
-    elif distribution == 'GEOMETRIC':
-        balloons = GeometricBalloons(N, 0.3)
-    else:
-        raise Exception("no distribution found ;-;???")
 
 B = balloons.getBallons()
 print(B)
 
-player = Player(args.name, args.age, args.gender, args.course, balloons, args.lossAversion, args.exp)
+player = Player(args.name, args.age, args.gender, args.course, balloons, args.lossAversion, args.exp, args.seenGraphs)
 # Game Part
 
 pygame.init()
