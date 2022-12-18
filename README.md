@@ -19,7 +19,7 @@ python game.py
 
 # Experiment 1 - Loss Aversion
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=1 --lossAversion=True
+python3 game.py --name="Obinna" --gender="M" --age="20" --balloons=10 --course=8 --exp=1 --lossAversion=True
 ```
 
 ```
@@ -28,14 +28,14 @@ python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 -
 
 # Experiment 2 - Same Distribution
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=2 --lossAversion=True --dist="GAUSSIAN 10 4 2" --obs="1,5,5,4,1,6,7,5,4,7"
+python3 game.py --name="Obinna" --gender="M" --age="20" --balloons=10 --course=8 --exp=2 --lossAversion=True --dist="GAUSSIAN 10 4 2" --obs="1,5,5,4,1,6,7,5,4,7"
 ```
 
 # Experiment 3 - Hypothesis Space
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=2 --lossAversion=True --seenGraphs=True
+python3 game.py --name="Obinna" --gender="M" --age="20" --balloons=10 --course=8 --exp=3 --lossAversion=True --seenGraphs=True
 ```
 
 ```
-python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=2 --lossAversion=True --seenGraphs=False
+python3 game.py --name="NAME" --gender="N" --age="20" --balloons=10 --course=6 --exp=3 --lossAversion=True --seenGraphs=False
 ```
