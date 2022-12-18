@@ -4,6 +4,9 @@ import matplotlib
 matplotlib.use('TkAgg')   
 import matplotlib.pyplot as plt 
 import random
+import numpy as np
+from dist import Gaussian, Geometric, Uniform, Limit
+import math
 
 def experiment():
     # number of experiments
@@ -97,7 +100,16 @@ def getAgent():
     plt.ylabel('points')
     plt.title('agent points gained over decision horizons, obs =[2, 3, 1, 1, 4, 4, 1, 3, 5, 3]')
     plt.savefig('graphs/Gaussian/[2, 3, 1, 1, 4, 4, 1, 3, 5, 3].pdf')
-    
+
+def makeGraphs():
+    dist = Geometric()
+    x = np.linspace(1, 11, num=100)
+    y = [dist.cdf(math.floor(i-1), math.floor(i)) for i in x]
+    plt.title("example balloon distribution")
+    plt.plot(x, y)
+    plt.ylabel('probability balloon pops at size x')
+    plt.xlabel('balloon size')
+    plt.savefig("dists/{}.pdf".format(dist.shortString()))
 
 # GAUSSIAN mean 7 std 1
 # BALLOONS: [5,6,5,7,5,6,7,5,6,7]
@@ -106,5 +118,5 @@ def getAgent():
 if __name__ == "__main__":
     # distRange()
     # experiment()
-    getAgent()
+    makeGraphs()
     print("Everything passed")
