@@ -151,12 +151,16 @@ def readPlayer():
 
 
 def readData(exp):
+    
     folder = os.path.join(os.getcwd(), "data/exp{}".format(exp))
 
+    avg = [0] * 10 
+    n_players = 0 
     for filename in os.listdir(folder):
         with open(os.path.join(folder, filename), 'r') as f: # open in readonly mode
             if(filename == ".DS_Store"):
                 continue
+            n_players += 1
             # print(filename)
             filestring = f.readlines()
             # print(filestring)
@@ -206,17 +210,48 @@ def readData(exp):
                 [index, size, action, time, score] = action
                 player.addActionData(int(index), int(size), action, int(time), int(score))
 
-            # print(player)
+            pper = player.pointPerBalloon()
+            for i in range(len(pper)):
+                avg[i] += pper[i]
             f.close()
             generateGamePlayGraph(player)
 
-def generateGamePlayGraph(player):
+    avgGraph([i * 1.0 / n_players for i in avg], player)
+    
+def avgGraph(p, player):
     #assumes player and agent have already played
     horizon = [1, 2, 3]
-    decay = [1, 0.9]
+    decay = [0.9, 1.0]
 
     x = [i for i in range(player.N)]
-    maxpoints = player.pops
+    maxpoints = player.pops.copy()
+    print(maxpoints)
+
+    for i in range(1, len(p)):
+        maxpoints[i] += maxpoints[i-1]
+    
+    for h in horizon:
+        for d in decay:
+            ap = getAgentPoints(player.pops, h, d)
+            plt.plot(x, ap, label='agent score h={} d={}'.format(h, d))
+    plt.plot(x, p, label='avg player score')
+    plt.plot(x, maxpoints, '--', label='theoretical max score')
+
+    plt.legend(loc='upper left')
+    plt.xlabel('balloon index')
+    plt.ylabel('points')
+    plt.title('points gained over time')
+    # plt.savefig('data/gameplay/{} AGENT.pdf'.format(player.playerinfonotime()))
+    plt.savefig('data/gameplay/a2 vgPlayerScore.pdf'.format(player.playerinfonotime(), h, d))
+    plt.clf()
+
+def generateGamePlayGraph(player):
+    #assumes player and agent have already played
+    horizon = [1, 2, 3, 4, 5, 6, 7]
+    decay = [0.9, 1.0]
+
+    x = [i for i in range(player.N)]
+    maxpoints = player.pops.copy()
     print(maxpoints)
     p = player.pointPerBalloon()
 
@@ -234,10 +269,15 @@ def generateGamePlayGraph(player):
     plt.xlabel('balloon index')
     plt.ylabel('points')
     plt.title('points gained over time')
-    plt.savefig('data/gameplay/{} AGENT H={} decay={}.pdf'.format(player.playerinfonotime(), h, d))
+    # plt.savefig('data/gameplay/justhuman/{}.pdf'.format(player.playerinfonotime()))
+    plt.savefig('data/gameplay/allhyp/{} AGENT H={} decay={}.pdf'.format(player.playerinfonotime(), h, d))
     plt.clf()
 
 def getAgentPoints(obs, h, d):
+    print(obs)
+    print(h)
+    print(d)
+
     agent = Agent(obs, h, d)
     agent.play()
     agentp = agent.pointPerBalloon().copy()
@@ -248,11 +288,11 @@ def getAgentPoints(obs, h, d):
 # probs: [0.0000, 0.0000, 0.0000, 0.0013, 0.0212, 0.1352, 0.3410, 0.3426, 0.1370, 0.0217]
 
 if __name__ == "__main__":
-    # readData(2)
-    # readData(3)
-    a = Agent([1,1,3,2,2,2,1,1,1,3], 4, 0.9)
-    a.play()
-    print(a.actions)
+    readData(3)
+    # a = Agent([6] * 10, 3, 0.9)
+    # a.play()
+    # a.play()
+    # print(a.actions)
     # do your stuff
     # distRange()
     # experiment()

@@ -85,9 +85,7 @@ class Uniform(Dist):
         self.var = (1.0/12)*(self.umax - self.umin)**2
         self.std = np.sqrt(self.var)
         self.total = self.unnormalizedcdf(0, self.max)
-
-        self.plotpdf()
-        print("self.total", self.total)
+        # print("self.total", self.total)
         
     def pdf(self, x):
         if x < self.umin:
@@ -136,7 +134,7 @@ class Limit(Dist):
         self.var = 0
         self.std = 0
         self.total = self.unnormalizedcdf(0, N)
-        print("self.total", self.total)
+        # print("self.total", self.total)
         
     def pdf(self, x):
         if x < self.limit or x >= self.limit + 1: 
