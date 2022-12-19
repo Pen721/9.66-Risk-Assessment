@@ -15,7 +15,7 @@ def experiment():
     # number of experiments
     K = 1
     #number of balloons
-    N = 20
+    N = 10
     obs = []
     dists = []
     decay = 0.5
@@ -61,8 +61,8 @@ def experiment():
     plt.savefig('graphs/Gaussian/N={}decay={}K={}.pdf'.format(N, decay, K))
 
 def horizontwo():
-    obs = [1, 3, 2]
-    decay = 1
+    obs = [0, 1, 2, 3, 4, 5, 6, 7]
+    decay = []
     a = Agent(obs, 1, decay)
     b = Agent(obs, 2, decay)
 
@@ -110,30 +110,33 @@ def getSingleAgent():
     #human score 24
     #gaussian mean 7 std 2 I think
     obs = [1,5,5,4,1,6,7,5,4,7]
-    decay = 1
-    horizon = 12
-    decays = [1]
+
+    # decay = [0.1, 0.3, 0.5, 0.7, 0.9, 1.0]
+    horizon = 7
+    decays = [0.1, 0.3, 0.5, 0.7, 0.9, 1.0]
 
     x = [i for i in range(horizon)]
     human = [14 for i in range(horizon)]
     y = [[] for i in range(len(decays))]
 
     for i in range(len(decays)):
-        a = Agent(obs, 5, decays[i])
-        y[i].append(a.play())
-        print(y[i])
-        print(a.mostlikely)
-        print(a.lastSwitch)
+        for h in range(horizon):
+            a = Agent(obs, h, decays[i])
+            y[i].append(a.play())
+            print(y)
+            # print(a.mostlikely)
+            # print(a.lastSwitch)
 
-    # for i in range(len(y)):
-    #     plt.plot(x, y[i], label='agent score, varying horizon'.format(round(1-decays[i], 1)))
+    for i in range(len(y)):
+        plt.plot(x, y[i], label='agent score, horizon={}, decay {}'.format(i, round(decays[i], 1)))
 
     # plt.plot(x, human, '--', label='human score')
-    # plt.legend(loc='upper right')
-    # plt.xlabel('horizon')
-    # plt.ylabel('points')
-    # plt.title('agent points with varying horizon'.format(obs))
-    # plt.savefig('graphs/Gaussian/26horizon.pdf')
+    plt.legend(loc='upper left')
+    plt.xlabel('horizon')
+    plt.ylabel('points')
+    plt.title('agent points with varying horizon'.format(obs))
+    plt.savefig('graphs/all-hyp/horizons.pdf')
+    plt.clf()
 
 def makeGraphs():
     dist = Geometric()
@@ -288,7 +291,8 @@ def getAgentPoints(obs, h, d):
 # probs: [0.0000, 0.0000, 0.0000, 0.0013, 0.0212, 0.1352, 0.3410, 0.3426, 0.1370, 0.0217]
 
 if __name__ == "__main__":
-    readData(3)
+    getSingleAgent()
+    # readData(1)
     # a = Agent([6] * 10, 3, 0.9)
     # a.play()
     # a.play()
