@@ -13,52 +13,143 @@ from player import Player
 
 def experiment():
     # number of experiments
-    K = 1
+    K = 30
     #number of balloons
     N = 10
     obs = []
+    distname = []
     dists = []
-    decay = 0.5
-    HORIZON = 12
+    decay = 1
+    HORIZON = 2
+    dists = []
     for i in range(K):
-        b = GaussianBalloons(N=N)
-        dists.append(b)
-        obs.append(b.getBallons())
+        DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
+        distribution = "GAUSSIAN"
+        balloons = None
+        if distribution == 'GAUSSIAN':
+            balloons = GaussianBalloons(N)
+        # elif distribution == 'UNIFORM':
+        #     balloons = UniformBalloons(N)
+        # elif distribution == 'LIMIT':
+        #     balloons = LimitBalloons(N)
+        # elif distribution == 'GEOMETRIC':
+        #     balloons = GeometricBalloons(N)
 
-    # b = [5,6,5,7,5,6,7,5,6,7]
+        distname.append(distribution)
+        dists.append(balloons)
+        balloons = balloons.getBallons()
+        obs.append(balloons)
 
-    # a = Agent(b, 20, 0.5)
-    # a.play()
-
-    # horizon = np.array([math.floor(i / K) for i in range(K*HORIZON)])
-
-    horizon = [[] for i in range(K)]
-    points = [[] for i in range(K)]
+    # horizon = [[] for i in range(K)]
+    # points = [[] for i in range(K)]
     # points = np.array([-1 for i in range(HORIZON*K)])
+    points = []
 
-    for i in range(HORIZON):
-        for j in range(K):
-            o = obs[j]
-            a = LossAverseAgent(o, i, decay)
-            p = a.play()
+    avg = 0
+    for j in range(K):
+        o = obs[j]
+        a = Agent(o, 2, decay)
+        a.play()
+        running = o.copy()
+        for i in range(1, len(running)):
+            running[i] += running[i-1]
+        p = a.pointPerBalloon().copy()
+        for i in range(len(balloons)):
+            p[i] = p[i] * 100.0/running[i]
+        points.append(p)
+        avg+=p[-1]
 
-            horizon[j].append(i)
-            # if(i==2):
-            #     if(points[2] > points[1]):
-            #         print("SECOND HORIZON BETTER THAN FIRST")
-            #         print(dists[j])
+    # for i in range(HORIZON):
+    #     for j in range(K):
+    #         o = obs[j]
+    #         a = LossAverseAgent(o, i, decay)
+    #         p = a.play()
+
+    #         horizon[j].append(i)
+    #         # if(i==2):
+    #         #     if(points[2] > points[1]):
+    #         #         print("SECOND HORIZON BETTER THAN FIRST")
+    #         #         print(dists[j])
             
-            points[j].append(p * 100.0 / a.total_points())
+    #         points[j].append(p * 100.0 / a.total_points())
             # points[i*K + j] = p
-
+    x = [i for i in range(10)]
     # plt.plot(horizon, points)
     for i in range(K):
-        plt.plot(horizon[i], points[i])
+        plt.plot(x, points[i], label='{}'.format(distname[i]))
 
     plt.xlabel('horizon')
     plt.ylabel('points')
-    plt.title('percentage of points gained over horizons, N={} decay={}'.format(N, decay))
-    plt.savefig('graphs/Gaussian/N={}decay={}K={}.pdf'.format(N, decay, K))
+    plt.legend(loc='upper right')
+    plt.title('percentage of points gained over time with horizon=2')
+    plt.savefig('graphs/horizon=2.pdf')
+
+
+    avg/= len(points)
+    print("FINAL AVERAGE PERCENTAGE POINT FROM VARYING: {}".format(avg))
+
+def testDistribution():
+    # number of experiments
+    K = 30
+    #number of balloons
+    N = 10
+    obs = []
+    distname = []
+    dists = []
+    decay = 1
+    HORIZON = 2
+    dists = []
+    for i in range(K):
+        DISTS = ["GAUSSIAN", "UNIFORM", "GEOMETRIC", "LIMIT"]
+        distribution = "GAUSSIAN"
+        balloons = None
+        if distribution == 'GAUSSIAN':
+            balloons = GaussianBalloons(N)
+        # elif distribution == 'UNIFORM':
+        #     balloons = UniformBalloons(N)
+        # elif distribution == 'LIMIT':
+        #     balloons = LimitBalloons(N)
+        # elif distribution == 'GEOMETRIC':
+        #     balloons = GeometricBalloons(N)
+
+        distname.append(distribution)
+        dists.append(balloons)
+        balloons = balloons.getBallons()
+        obs.append(balloons)
+
+    # horizon = [[] for i in range(K)]
+    # points = [[] for i in range(K)]
+    # points = np.array([-1 for i in range(HORIZON*K)])
+    points = []
+
+    avg = 0
+    for j in range(K):
+        o = obs[j]
+        a = Agent(o, 2, decay)
+        a.play()
+        running = o.copy()
+        for i in range(1, len(running)):
+            running[i] += running[i-1]
+        p = a.pointPerBalloon().copy()
+        for i in range(len(balloons)):
+            p[i] = p[i] * 100.0/running[i]
+        points.append(p)
+        avg+=p[-1]
+
+    x = [i for i in range(10)]
+    # plt.plot(horizon, points)
+    for i in range(K):
+        plt.plot(x, points[i], label='{}'.format(distname[i]))
+
+    plt.xlabel('horizon')
+    plt.ylabel('points')
+    plt.legend(loc='upper right')
+    plt.title('percentage of points gained over time with horizon=2')
+    plt.savefig('graphs/horizon=2.pdf')
+
+
+    avg/= len(points)
+    print("FINAL AVERAGE PERCENTAGE POINT FROM VARYING: {}".format(avg))
 
 def horizontwo():
     obs = [0, 1, 2, 3, 4, 5, 6, 7]
@@ -83,7 +174,7 @@ def getAgent():
     obs = [1,5,5,4,1,6,7,5,4,7]
     decay = 1
     horizon = 8
-    decays = [0.1, 0.3, 0.5, 0.7, 0.9, 1]
+    decays = [0.9, 1]
 
     x = [i for i in range(horizon)]
     human = [14 for i in range(horizon)]
@@ -154,16 +245,15 @@ def readPlayer():
 
 
 def readData(exp):
-    
     folder = os.path.join(os.getcwd(), "data/exp{}".format(exp))
-
+    aavg = 0
     avg = [0] * 10 
     n_players = 0 
     for filename in os.listdir(folder):
         with open(os.path.join(folder, filename), 'r') as f: # open in readonly mode
             if(filename == ".DS_Store"):
                 continue
-            n_players += 1
+            # n_players += 1
             # print(filename)
             filestring = f.readlines()
             # print(filestring)
@@ -176,6 +266,7 @@ def readData(exp):
 
             N = int(diststring[7])
             if(disttype == "GAUSSIAN"):
+                n_players+=1
                 mean = int(diststring[8])
                 std = int(diststring[9])
                 dist = Gaussian(N, mean, std)
@@ -208,6 +299,13 @@ def readData(exp):
             score = int(filestring[-1].split()[-1])
             player.finalScore = score
 
+            if(disttype == "GAUSSIAN"):
+                print(avg)
+                total = 0.0
+                for i in obs:
+                    total += i
+                aavg += score / total
+
             for i in range(2, len(filestring) - 1):
                 action = filestring[i].split()
                 [index, size, action, time, score] = action
@@ -217,9 +315,35 @@ def readData(exp):
             for i in range(len(pper)):
                 avg[i] += pper[i]
             f.close()
-            generateGamePlayGraph(player)
+            # GamePlayGraphSingleAgent(player)
+            diff(player)
+    avg = aavg / n_players
+    print("AVG: {}".format(avg))
 
-    avgGraph([i * 1.0 / n_players for i in avg], player)
+def diff(player):
+    diffs = 0
+    pop = player.pops.copy()
+    total = 0
+    for i in pop:
+        total+=i
+    p = player.pointPerBalloon()
+
+    a = Agent(pop, 2, 1)
+    a.play()
+    ap = a.pointPerBalloon()
+
+    for i in range(len(pop)):
+        if(p[i] == 0 and ap[i] == 0):
+            diffs +=0
+        if(p[i] == 0):
+            diffs += pop[i] - ap[i]
+        elif(ap[i] == 0):
+            diffs += pop[i] - ap[i]
+
+    print(p)
+    print(ap)
+    print(diffs)
+    print(diffs / total)
     
 def avgGraph(p, player):
     #assumes player and agent have already played
@@ -276,6 +400,27 @@ def generateGamePlayGraph(player):
     plt.savefig('data/gameplay/allhyp/{} AGENT H={} decay={}.pdf'.format(player.playerinfonotime(), h, d))
     plt.clf()
 
+def GamePlayGraphSingleAgent(player):
+    #assumes player and agent have already played
+    x = [i for i in range(player.N)]
+    maxpoints = player.pops.copy()
+    p = player.pointPerBalloon()
+
+    for i in range(1, len(p)):
+        maxpoints[i] += maxpoints[i-1]
+    
+    ap = getAgentPoints(player.pops, 2, 1)
+    plt.plot(x, ap, label='agent score')
+    plt.plot(x, p, label='player score')
+    plt.plot(x, maxpoints, '--', label='theoretical max score')
+
+    plt.legend(loc='upper left')
+    plt.xlabel('balloon index')
+    plt.ylabel('points')
+    plt.title('points gained over time')
+    plt.savefig('data/gameplay/allhyp/{} AGENT varying horizon'.format(player.playerinfonotime()))
+    plt.clf()
+
 def getAgentPoints(obs, h, d):
     print(obs)
     print(h)
@@ -286,13 +431,18 @@ def getAgentPoints(obs, h, d):
     agentp = agent.pointPerBalloon().copy()
     return agentp
 
+
+
+# def compareplayertoAgent(player, agent):
+    
+
 # GAUSSIAN mean 7 std 1
 # BALLOONS: [5,6,5,7,5,6,7,5,6,7]
 # probs: [0.0000, 0.0000, 0.0000, 0.0013, 0.0212, 0.1352, 0.3410, 0.3426, 0.1370, 0.0217]
 
 if __name__ == "__main__":
-    getSingleAgent()
-    # readData(1)
+    # experiment()
+    readData(2)
     # a = Agent([6] * 10, 3, 0.9)
     # a.play()
     # a.play()
