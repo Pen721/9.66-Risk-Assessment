@@ -1,5 +1,5 @@
 # 9.66-FInal-Project-
-Using Bayesian Models to Approximate Human Risk Behavior in BART Task
+Using Bayesian models to approxiamte risk in BART tasks
 
 # Set up 
 Python 3.5 with Pygame
